@@ -4,82 +4,87 @@ using UnityEngine;
 
 public class TargetMovementScript : MonoBehaviour {
 	/*
-	 * (Remember to use radians) - the target will be moving in a correlated random walk, with the 
+	 * The target will be moving in a correlated random walk, with the 
 	 * probability of it going further smoothly decreasing as it approaches the prohibited area around the
 	 * user's feet (this doesn't apply for anywhere else).
 	 */
 
 	const float velocity = 8.0f;
-	bool flippedDirection = false;
-
-	float x = 1.0f, y = 1.0f;
 	int turns = 0;
+
+	float oldY;
 
 	float deltaX = 1.0f;
 	float deltaY = 1.0f;
 	float deltaRadius = 0.0f;
 	float distanceFromCenter = 5.0f;
 
-	float relativeDirectionAngle;
+	public float relativeDirectionAngle;
+	public float[] randomGaussianArr;
+	int randomGaussianIndex = 0;
 
-	const float radius = 5.0f;
+	public static float radius = 5.0f;
 
 	static int frameCount = 0;
 
 	Transform cameraTransform;
 
 	void Start () {
-		float random = Random.Range (-1.0f, 1.0f);
-		deltaX = velocity * random;
-		deltaY = Mathf.Sqrt (velocity * velocity - deltaX * deltaX);
+		//float random = Random.Range (0.0f, Mathf.PI * 2.0f);
+		if (transform.localPosition.y < 2.4f) {
+			relativeDirectionAngle /= 2.0f;
+		}
+		deltaX = velocity * Mathf.Cos(relativeDirectionAngle);
+		deltaY = velocity * Mathf.Sin (relativeDirectionAngle);
 		//deltaRadius = velocity * random;
 		cameraTransform = FindObjectOfType<Camera> ().transform;
+		oldY = transform.localPosition.y;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		//Move phi, theta, then p:
 		if (frameCount > 12) {
-			float randomGaussian = RandomFromDistribution.RandomFromStandardNormalDistribution () / 3.5f;
-			randomGaussian = Mathf.Clamp (randomGaussian, -1.0f, 1.0f);
+			//float randomGaussian = RandomFromDistribution.RandomFromStandardNormalDistribution () / 3.5f;
+			//randomGaussian = Mathf.Clamp (randomGaussian, -1.0f, 1.0f);
+			if (randomGaussianIndex == randomGaussianArr.Length) {
+				randomGaussianIndex = 0;
+			}
 			relativeDirectionAngle = Mathf.Atan (deltaY / deltaX);
 			if ((deltaX < 0 && deltaY < 0) || (deltaY > 0 && deltaX < 0))
 				relativeDirectionAngle += Mathf.PI;
 			
-			relativeDirectionAngle += randomGaussian * (Mathf.PI / 3.0f);
-			randomGaussian += radius - distanceFromCenter;
+			relativeDirectionAngle += randomGaussianArr[randomGaussianIndex] * (Mathf.PI / 3.0f);
+			float randomGaussianRad = randomGaussianArr[randomGaussianIndex] + radius - distanceFromCenter; //Radius is locked from 4.0f to 6.0f this way
 
-			deltaRadius = randomGaussian;
+			deltaRadius = randomGaussianRad;
 			frameCount = 0;
+			randomGaussianIndex++;
 		}
-		if (transform.localPosition.y < 2.5f && turns < 10) { //Start turning smoothly
+
+
+		if (transform.localPosition.y < 3.0f && transform.localPosition.y - oldY < 0f) { //Start turning smoothly if it's in this zone and moving down:
 			turns++;
-			if (relativeDirectionAngle > 0 || turns > 1)
-				relativeDirectionAngle -= Mathf.PI / 10.0f;
-			else
-				relativeDirectionAngle += Mathf.PI / 10.0f;
+			float newAngle = relativeDirectionAngle + Mathf.PI / 15.0f;
+			if (Mathf.Sin (newAngle) * transform.up.y > Mathf.Sin (relativeDirectionAngle) * transform.up.y) {
+				relativeDirectionAngle += Mathf.PI / 15.0f;
+			} else {
+				relativeDirectionAngle -= Mathf.PI / 15.0f;
+			}
 			
-		} else if (transform.localPosition.y >= 3.0f) {
+		} else if (turns > 0 && transform.localPosition.y > 3.2f) {
 			turns = 0;
 		}
-			/*if (transform.localPosition.y < 2.0f && !flippedDirection) { //Turn abruptly
-				if (relativeDirectionAngle > 0) {
-					relativeDirectionAngle -= Mathf.PI;
-				} else {
-					relativeDirectionAngle += Mathf.PI;
-				}
-				flippedDirection = true;
-			} else {
-				flippedDirection = false;
-			}*/
-
+			
 		deltaY = velocity * Mathf.Sin (relativeDirectionAngle);
 		deltaX = velocity * Mathf.Cos (relativeDirectionAngle);
 
-			
-		//Set to rotate about sphere:
+
+		//Some vector math so that the orbit is spherical and not rectangular: 
 
 		Vector3 oldPosition = transform.localPosition;
+
+		oldY = transform.localPosition.y;
 
 		transform.localPosition += transform.right * deltaX * Time.deltaTime;
 		transform.localPosition += transform.up * deltaY * Time.deltaTime;

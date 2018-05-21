@@ -1,8 +1,9 @@
 ﻿<Properties StartupItem="Assembly-CSharp.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Oculus/VR/Scripts/OVRCameraRig.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/TargetMovementScript.cs">
     <Files>
-      <File FileName="Assets/Oculus/VR/Scripts/OVRCameraRig.cs" Line="140" Column="1" />
+      <File FileName="Assets/GenerateTargetsScript.cs" Line="9" Column="24" />
+      <File FileName="Assets/TargetMovementScript.cs" Line="30" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -45,3 +45,7 @@
 /Users/srichmond/Documents/GitHub/VR/Temp/bin/Debug/UnityEditor.iOS.Extensions.Xcode.xml
 /Users/srichmond/Documents/GitHub/VR/Temp/bin/Debug/UnityEditor.iOS.Extensions.Common.dll
 /Users/srichmond/Documents/GitHub/VR/Temp/bin/Debug/UnityEditor.iOS.Extensions.Common.dll.mdb
+/Users/srichmond/Documents/GitHub/VR/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/Users/srichmond/Documents/GitHub/VR/Temp/bin/Debug/Assembly-CSharp.dll
+/Users/srichmond/Documents/GitHub/VR/obj/Debug/Assembly-CSharp.dll
+/Users/srichmond/Documents/GitHub/VR/obj/Debug/Assembly-CSharp.dll.mdb
