@@ -42,24 +42,30 @@ public class TargetMovementScript : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void FixedUpdate () {
 		//Move phi, theta, then p:
 		if (frameCount > 12) {
-			//float randomGaussian = RandomFromDistribution.RandomFromStandardNormalDistribution () / 3.5f;
+			float randomGaussian = RandomFromDistribution.RandomFromStandardNormalDistribution () / 3.5f;
 			//randomGaussian = Mathf.Clamp (randomGaussian, -1.0f, 1.0f);
-			if (randomGaussianIndex == randomGaussianArr.Length) {
-				randomGaussianIndex = 0;
-			}
-			relativeDirectionAngle = Mathf.Atan (deltaY / deltaX);
-			if ((deltaX < 0 && deltaY < 0) || (deltaY > 0 && deltaX < 0))
-				relativeDirectionAngle += Mathf.PI;
+			//if (randomGaussianIndex == randomGaussianArr.Length) {
+			//	randomGaussianIndex = 0;
+			//}
+			//relativeDirectionAngle = Mathf.Atan (deltaY / deltaX);
+			//if ((deltaX < 0 && deltaY < 0) || (deltaY > 0 && deltaX < 0))
+			//	relativeDirectionAngle += Mathf.PI;
 			
-			relativeDirectionAngle += randomGaussianArr[randomGaussianIndex] * (Mathf.PI / 3.0f);
-			float randomGaussianRad = randomGaussianArr[randomGaussianIndex] + radius - distanceFromCenter; //Radius is locked from 4.0f to 6.0f this way
+			relativeDirectionAngle += randomGaussian * (Mathf.PI / 3.0f);
+			relativeDirectionAngle %= (Mathf.PI * 2f);
 
-			deltaRadius = randomGaussianRad;
+			randomGaussian = RandomFromDistribution.RandomFromStandardNormalDistribution () * 0.5f; //Constant 0.5 can change
+
+			if (distanceFromCenter > radius + randomGaussian) {
+				deltaRadius = -1f;
+			} else {
+				deltaRadius = 1f;
+			}
+
 			frameCount = 0;
-			randomGaussianIndex++;
 		}
 
 

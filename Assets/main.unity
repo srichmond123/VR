@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: 751196054}
   - component: {fileID: 751196053}
   m_Layer: 0
-  m_Name: TestCameraNotVR
+  m_Name: TestCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
