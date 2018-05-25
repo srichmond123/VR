@@ -97,12 +97,14 @@ public class GenerateTargetsScript : MonoBehaviour {
 				= new Vector3 (radius * Mathf.Sin (phiRealPlayer) * Mathf.Cos (thetaRealPlayer), radius * Mathf.Cos (phiRealPlayer) + 5, radius * Mathf.Sin (phiRealPlayer) * Mathf.Sin (thetaRealPlayer));
 				targetPrefReal.transform.LookAt (new Vector3 (0, 5, 0));
                 targetPrefReal.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material1;
+                targetPrefReal.tag = "UserTarget";
 
                 GameObject targetPrefVirtual = Instantiate(targetPrefab) as GameObject;
                 targetPrefVirtual.transform.localPosition
                 = new Vector3(radius * Mathf.Sin(phiVirtualPeer) * Mathf.Cos(thetaVirtualPeer), radius * Mathf.Cos(phiVirtualPeer) + 5, radius * Mathf.Sin(phiVirtualPeer) * Mathf.Sin(thetaVirtualPeer));
                 targetPrefVirtual.transform.LookAt(new Vector3(0, 5, 0));
                 targetPrefVirtual.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material2;
+                targetPrefVirtual.tag = "PeerTarget";
 
 
                 generatedTargetForInterval = true;

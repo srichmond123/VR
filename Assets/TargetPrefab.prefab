@@ -126,6 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   relativeDirectionAngle: 0
+  cameraTransform: {fileID: 0}
 --- !u!135 &135058908117953974
 SphereCollider:
   m_ObjectHideFlags: 1

@@ -25,7 +25,7 @@ public class TargetMovementScript : MonoBehaviour {
 
 	public static float radius = 5.0f;
 
-	static int frameCount = 0;
+	int frameCount = 0;
 
 	public Transform cameraTransform;
 
@@ -60,9 +60,9 @@ public class TargetMovementScript : MonoBehaviour {
 			randomGaussian = RandomFromDistribution.RandomFromStandardNormalDistribution () * 0.5f; //Constant 0.5 can change
 
 			if (distanceFromCenter > radius + randomGaussian) {
-				deltaRadius = -1f;
+				deltaRadius = -0.75f;
 			} else {
-				deltaRadius = 1f;
+				deltaRadius = 0.75f;
 			}
 
 			frameCount = 0;
