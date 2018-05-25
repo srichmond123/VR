@@ -14,6 +14,8 @@ public class GenerateTargetsScript : MonoBehaviour {
 	public static int totalTrajectories = 500;
 	bool generatedTargetForInterval = false; //So more than 1 aren't generated in the interval
 	float randomTime = -1f; //-1 if a random number hasn't been generated: this will be reset to -1 after every 2 second interval:
+    public Material material1;
+    public Material material2;
 
 	//Make some tables: (3 minutes of flight is 900 standard normals/3.5 clamped at -1, 1)
 	//Include other columns for a random between 0 and 2pi (start angle), a random gaussian for start radius, 
@@ -56,8 +58,8 @@ public class GenerateTargetsScript : MonoBehaviour {
 		}
 		if (!generatedTargetForInterval) {
 			if (time > randomTime) {
-				//Pick data from trajectory_.csv for new target:
-
+                //Pick data from trajectory_.csv for new target:
+                /*
 				if (targetIndex == totalTrajectories) { //If we somehow get more than 500, just go back to 0:
 					targetIndex = 0;
 				}
@@ -73,29 +75,37 @@ public class GenerateTargetsScript : MonoBehaviour {
 				float.TryParse (firstLineData [2], out startRadiusGaussian);
 				float.TryParse(firstLineData[3], out startTheta);
 				float.TryParse (firstLineData [4], out startPhi);
-
-				float radius = startRadiusGaussian + TargetMovementScript.radius;
+                */
+				float radius = TargetMovementScript.radius;
 
 				//Now, uniformly choose random point on sphere, excluding bottom around feet:
+                
+                float thetaRealPlayer = Random.Range(0f, 2f * Mathf.PI);
+                float thetaVirtualPeer = Random.Range(0f, 2f * Mathf.PI);
 
-				float theta = startTheta;
-				float phi = Mathf.Acos (2 * startPhi - 1);
-
+                float phiRealPlayer = Mathf.Acos (2f * Random.Range(0.146f, 1f) - 1f);
+                float phiVirtualPeer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
+                /*
 				float[] randomGaussianArr = new float[900];
 				for (int i = 0; i < randomGaussianArr.Length; i++) {
 					string[] currLine = (lines[i + 1].Trim()).Split(","[0]);
 					float.TryParse (currLine [0], out randomGaussianArr [i]);
 				}
+                */
+                GameObject targetPrefReal = Instantiate (targetPrefab) as GameObject;
+				targetPrefReal.transform.localPosition
+				= new Vector3 (radius * Mathf.Sin (phiRealPlayer) * Mathf.Cos (thetaRealPlayer), radius * Mathf.Cos (phiRealPlayer) + 5, radius * Mathf.Sin (phiRealPlayer) * Mathf.Sin (thetaRealPlayer));
+				targetPrefReal.transform.LookAt (new Vector3 (0, 5, 0));
+                targetPrefReal.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material1;
 
-				GameObject targetPrefTemp = Instantiate (targetPrefab) as GameObject;
-				targetPrefTemp.transform.localPosition
-				= new Vector3 (radius * Mathf.Sin (phi) * Mathf.Cos (theta), radius * Mathf.Cos (phi) + 5, radius * Mathf.Sin (phi) * Mathf.Sin (theta));
-				targetPrefTemp.GetComponent<TargetMovementScript> ().relativeDirectionAngle = startMovementAngle;
+                GameObject targetPrefVirtual = Instantiate(targetPrefab) as GameObject;
+                targetPrefVirtual.transform.localPosition
+                = new Vector3(radius * Mathf.Sin(phiVirtualPeer) * Mathf.Cos(thetaVirtualPeer), radius * Mathf.Cos(phiVirtualPeer) + 5, radius * Mathf.Sin(phiVirtualPeer) * Mathf.Sin(thetaVirtualPeer));
+                targetPrefVirtual.transform.LookAt(new Vector3(0, 5, 0));
+                targetPrefVirtual.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material2;
 
-				targetPrefTemp.GetComponent<TargetMovementScript> ().randomGaussianArr = randomGaussianArr;
 
-				targetPrefTemp.transform.LookAt (new Vector3 (0, 5, 0));
-				generatedTargetForInterval = true;
+                generatedTargetForInterval = true;
 				targetIndex++;
 			}
 		}

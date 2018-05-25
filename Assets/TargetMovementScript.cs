@@ -9,7 +9,7 @@ public class TargetMovementScript : MonoBehaviour {
 	 * user's feet (this doesn't apply for anywhere else).
 	 */
 
-	const float velocity = 8.0f;
+	const float velocity = 5f;
 	int turns = 0;
 
 	float oldY;
@@ -20,24 +20,24 @@ public class TargetMovementScript : MonoBehaviour {
 	float distanceFromCenter = 5.0f;
 
 	public float relativeDirectionAngle;
-	public float[] randomGaussianArr;
-	int randomGaussianIndex = 0;
+	//public float[] randomGaussianArr;
+	//int randomGaussianIndex = 0;
 
 	public static float radius = 5.0f;
 
 	static int frameCount = 0;
 
-	Transform cameraTransform;
+	public Transform cameraTransform;
 
 	void Start () {
-		//float random = Random.Range (0.0f, Mathf.PI * 2.0f);
+		float random = Random.Range (0.0f, Mathf.PI * 2.0f);
 		if (transform.localPosition.y < 2.4f) {
 			relativeDirectionAngle /= 2.0f;
 		}
 		deltaX = velocity * Mathf.Cos(relativeDirectionAngle);
 		deltaY = velocity * Mathf.Sin (relativeDirectionAngle);
-		//deltaRadius = velocity * random;
-		cameraTransform = FindObjectOfType<Camera> ().transform;
+        deltaRadius = Random.Range(0, 2) * 2 - 1;
+        cameraTransform = GameObject.FindGameObjectWithTag("VRCamera").transform;
 		oldY = transform.localPosition.y;
 	}
 	
