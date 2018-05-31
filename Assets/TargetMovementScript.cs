@@ -45,7 +45,8 @@ public class TargetMovementScript : MonoBehaviour {
 	void FixedUpdate () {
 		//Move phi, theta, then p:
 		if (frameCount > 12) {
-			float randomGaussian = RandomFromDistribution.RandomFromStandardNormalDistribution () / 3.5f;
+
+            float randomGaussian = RandomFromStandardNormalDistribution () / 3.5f;
 			//randomGaussian = Mathf.Clamp (randomGaussian, -1.0f, 1.0f);
 			//if (randomGaussianIndex == randomGaussianArr.Length) {
 			//	randomGaussianIndex = 0;
@@ -57,7 +58,7 @@ public class TargetMovementScript : MonoBehaviour {
 			relativeDirectionAngle += randomGaussian * (Mathf.PI / 3.0f);
 			relativeDirectionAngle %= (Mathf.PI * 2f);
 
-			randomGaussian = RandomFromDistribution.RandomFromStandardNormalDistribution () * 0.5f; //Constant 0.5 can change
+			randomGaussian = RandomFromStandardNormalDistribution () * 0.5f; //Constant 0.5 can change
 
 			if (distanceFromCenter > radius + randomGaussian) {
 				deltaRadius = -0.75f;
@@ -107,4 +108,39 @@ public class TargetMovementScript : MonoBehaviour {
 
 		frameCount++;
 	}
+
+
+    float RandomFromStandardNormalDistribution()
+    {
+        // also known as Marsaglia polar method:
+
+
+        // calculate points on a circle
+        float u, v;
+
+        float s; // this is the hypotenuse squared.
+        do
+        {
+            u = Random.Range(-1f, 1f);
+            v = Random.Range(-1f, 1f);
+            s = (u * u) + (v * v);
+        } while (!(s != 0 && s < 1)); // keep going until s is nonzero and less than one
+
+        // TODO allow a user to specify how many random numbers they want!
+        // choose between u and v for seed (z0 vs z1)
+        float seed;
+        if (Random.Range(0, 2) == 0)
+        {
+            seed = u;
+        }
+        else
+        {
+            seed = v;
+        }
+
+        // create normally distributed number.
+        float z = seed * Mathf.Sqrt(-2.0f * Mathf.Log(s) / s);
+
+        return z;
+    }
 }

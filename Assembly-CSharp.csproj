@@ -293,6 +293,7 @@
     <Compile Include="Assets\RandomFromDistributions\Scripts\RandomFromDistribution.cs" />
     <Compile Include="Assets\TargetMovementScript.cs" />
     <Compile Include="Assets\TargetShootScript.cs" />
+    <Compile Include="Assets\VirtualPeerBehavior.cs" />
     <None Include="Assets\Oculus\Avatar\Content\Materials\AvatarMaterialStateShader.cginc" />
     <None Include="Assets\Oculus\VR\Resources\OVRMRUnlitTransparent.shader" />
     <None Include="Assets\Oculus\VR\Resources\OVRMRChromaKey.cginc" />
