@@ -8,6 +8,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
     public static int peerGoal = 0;
     public int performanceConstant;
     float time = 0f;
+    float timeChangeRandomNoise = 0f;
     float nextActionTime = -1f;
     bool gainPointsNextAction = false;
     int noise = 0;
@@ -25,6 +26,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         time += Time.deltaTime;
+        timeChangeRandomNoise += Time.deltaTime; //Change the noise every 10 seconds, randomly
         int currentUserScore = TargetShootScript.userScore;
         peerGoal = currentUserScore + threshold;
 
@@ -68,7 +70,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
             if (nextActionTime < 0f)
             {
                 time = 0f;
-                nextActionTime = Random.Range(0f, 4f) / (peerGoal - peerPoints);
+                nextActionTime = Random.Range(0f, 3.5f) / ((peerGoal - peerPoints) * (peerGoal - peerPoints));
                 gainPointsNextAction = true;
             }
         }
@@ -77,13 +79,16 @@ public class VirtualPeerBehavior : MonoBehaviour {
             if (nextActionTime < 0f)
             {
                 time = 0f;
-                nextActionTime = Random.Range(0f, 4f) / (peerPoints - peerGoal);
+                nextActionTime = Random.Range(0f, 3.5f) / ((peerPoints - peerGoal) * (peerPoints - peerGoal));
                 gainPointsNextAction = false;
             }
         }
-        else //Virtual peer has the points it's supposed to. Some random noise might be good in this case:
-        {
 
+        if (timeChangeRandomNoise >= 10f)
+        {
+            noise = Random.Range(-1, 2); //-1, 0, 1
+            threshold = performanceConstant + noise;
+            timeChangeRandomNoise = 0f;
         }
 	}
 }

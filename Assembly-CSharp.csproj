@@ -291,9 +291,16 @@
     <Compile Include="Assets\RandomFromDistributions\Examples\Monster Spawner Example\Monster.cs" />
     <Compile Include="Assets\RandomFromDistributions\Examples\Monster Spawner Example\MonsterSpawner.cs" />
     <Compile Include="Assets\RandomFromDistributions\Scripts\RandomFromDistribution.cs" />
+    <Compile Include="Assets\SkySphere_V1\Examples\Gui.cs" />
+    <Compile Include="Assets\SkySphere_V1\Examples\MouseLook.cs" />
     <Compile Include="Assets\TargetMovementScript.cs" />
     <Compile Include="Assets\TargetShootScript.cs" />
     <Compile Include="Assets\VirtualPeerBehavior.cs" />
+    <Compile Include="Assets\WorldBuilder\Scripts\Heightmapbuilder.cs" />
+    <Compile Include="Assets\WorldBuilder\Scripts\Helpers\Threading.cs" />
+    <Compile Include="Assets\WorldBuilder\Scripts\TerrainFoliage.cs" />
+    <Compile Include="Assets\WorldBuilder\Scripts\TerrainGeneration.cs" />
+    <Compile Include="Assets\WorldBuilder\Scripts\TerrainTexturing.cs" />
     <None Include="Assets\Oculus\Avatar\Content\Materials\AvatarMaterialStateShader.cginc" />
     <None Include="Assets\Oculus\VR\Resources\OVRMRUnlitTransparent.shader" />
     <None Include="Assets\Oculus\VR\Resources\OVRMRChromaKey.cginc" />
@@ -307,6 +314,7 @@
     <None Include="Assets\Oculus\VR\Shaders\Unlit Crosshair.shader" />
     <None Include="Assets\Oculus\VR\Resources\Unlit Transparent Color.shader" />
     <None Include="Assets\Oculus\VR\Resources\OVRMRCameraFrameLit.shader" />
+    <None Include="Assets\SkySphere_V1\Documentation\How to use.txt" />
     <None Include="Assets\Oculus\Avatar\Content\Materials\AvatarSurfaceShaderPBSV2.shader" />
     <None Include="Assets\Oculus\VR\Resources\Underlay Transparent Occluder.shader" />
     <None Include="Assets\Oculus\VR\Resources\Texture2D Blit.shader" />
@@ -525,6 +533,9 @@
     </Reference>
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>C:/Users/pooja/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
+    </Reference>
+    <Reference Include="CoherentNoise">
+      <HintPath>C:/Users/pooja/Documents/GitHub/VR/Assets/WorldBuilder/Scripts/Helpers/CoherentNoise.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>

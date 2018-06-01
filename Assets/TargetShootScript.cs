@@ -32,7 +32,7 @@ public class TargetShootScript : MonoBehaviour {
                     VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer's Score = " + VirtualPeerBehavior.peerPoints;
 
                 }
-                Destroy(hit.transform.gameObject);
+                Destroy(hit.transform.parent.gameObject);
             }
             else
             {
