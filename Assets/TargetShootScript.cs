@@ -104,25 +104,25 @@ public class TargetShootScript : MonoBehaviour {
         {
             if (gameObject.tag.Equals("RightHandLaser")) //Meaning we're in the right hand script and the user pressed their right hand:
             {
-                playing = true;
-                thisControllerInUse = true;
-                DataCollector.collectingData = true;
-                GameObject.Find("ControllerImage").SetActive(false);
-                GameObject.Find("BeginText").SetActive(false);
-                GetComponent<MeshRenderer>().enabled = true;
+                initializeController();
             }
         }
         if (!playing && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
         {
             if (gameObject.tag.Equals("LeftHandLaser"))
             {
-                playing = true;
-                thisControllerInUse = true;
-                DataCollector.collectingData = true;
-                GameObject.Find("ControllerImage").SetActive(false);
-                GameObject.Find("BeginText").SetActive(false);
-                GetComponent<MeshRenderer>().enabled = true;
+                initializeController();
             }
         }
+    }
+
+    void initializeController()
+    {
+        playing = true;
+        thisControllerInUse = true;
+        //DataCollector.collectingData = true;
+        GameObject.Find("ControllerImage").SetActive(false);
+        GameObject.Find("BeginText").SetActive(false);
+        GetComponent<MeshRenderer>().enabled = true;
     }
 }

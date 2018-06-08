@@ -10,8 +10,6 @@ public class TargetMovementScript : MonoBehaviour {
 	 */
 
 	const float velocity = 5f;
-    const float sigma = 0.1f;
-    const float sigmar = 0.1f;
     int turns = 0;
 
 	float oldY;
@@ -32,8 +30,13 @@ public class TargetMovementScript : MonoBehaviour {
     public float phi;
     float deltaTheta;
     float deltaPhi;
+    float gameTime = 0f;
+    const float sigma = 0.03f;
+    const float sigmar = 0.1f;
+    float omegaPhi = 0.5f;
+    float omegaTheta = 0.5f;
 
-	public Transform cameraTransform;
+    public Transform cameraTransform;
 
 	void Start () {
         
@@ -48,11 +51,20 @@ public class TargetMovementScript : MonoBehaviour {
         deltaRadius = Random.Range(0, 2) * 2 - 1;
         cameraTransform = GameObject.FindGameObjectWithTag("VRCamera").transform;
 		oldY = transform.localPosition.y;
+
+
+        //New spherical method:
+        omegaPhi = Random.Range(-1f, 1f);
+        omegaTheta = Random.Range(-1f, 1f);
 	}
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+
+
         
+
+
 		if (frameCount > 12) {
 
             float randomGaussian = RandomFromStandardNormalDistribution () / 3.5f;
@@ -67,7 +79,7 @@ public class TargetMovementScript : MonoBehaviour {
 			relativeDirectionAngle += randomGaussian * (Mathf.PI / 3.0f);
 			relativeDirectionAngle %= (Mathf.PI * 2f);
 
-			randomGaussian = RandomFromStandardNormalDistribution () * 1f; //Constant 0.5 can change
+			randomGaussian = RandomFromStandardNormalDistribution () * 2.5f; //Constant 0.5 can change
 
 			if (distanceFromCenter > radius + randomGaussian) {
 				deltaRadius = -0.75f;
@@ -79,7 +91,8 @@ public class TargetMovementScript : MonoBehaviour {
 		}
 
 
-        if (transform.localPosition.y < 3.0f && transform.localPosition.y - oldY < 0f) { //Start turning smoothly if it's in this zone and moving down:
+        if ( (transform.localPosition.y < 3.0f && transform.localPosition.y - oldY < 0f) ||
+            (transform.localPosition.y > 8.2f && transform.localPosition.y - oldY > 0f)) { //Start turning smoothly if it's in the prohibited zone and moving down/up into it:
             turns++;
             float addAngle = relativeDirectionAngle + Mathf.PI / 45.0f;
             float subAngle = relativeDirectionAngle - Mathf.PI / 45.0f;
@@ -91,7 +104,8 @@ public class TargetMovementScript : MonoBehaviour {
             newPosSub += transform.right * velocity * Mathf.Cos(subAngle) * Time.deltaTime;
             newPosSub += transform.up * velocity * Mathf.Sin(subAngle) * Time.deltaTime;
 
-            if (newPosAdd.y > newPosSub.y)
+            if ( (transform.localPosition.y < 3.0f && newPosAdd.y > newPosSub.y) 
+                || (transform.localPosition.y > 8.2f && newPosAdd.y < newPosSub.y))
             {
                 relativeDirectionAngle = addAngle;
             }
@@ -128,17 +142,21 @@ public class TargetMovementScript : MonoBehaviour {
 		transform.localPosition += transform.forward * -(newDistanceFromCenter - distanceFromCenter);
 
         
-
+        
         //New method: spherical coordinates
+        ///////////////////
         /*
+
+
+        gameTime += Time.deltaTime;
         if (frameCount > 12)
         {
 
             float randomGaussian = RandomNormalDistribution(0f, sigma * Mathf.Sqrt(Time.deltaTime));
-            deltaTheta = (1f / Mathf.Sin(phi)) * (randomGaussian) + (-0.6f) * Mathf.Sin(phi) * Time.deltaTime;
+            deltaTheta = (1f / Mathf.Sin(phi)) * (randomGaussian) + (omegaTheta) * Mathf.Sin(phi) * Time.deltaTime;
 
             randomGaussian = RandomNormalDistribution(0f, sigma * Mathf.Sqrt(Time.deltaTime));
-            deltaPhi = randomGaussian + ( (sigma * sigma) / (2f * Mathf.Tan(phi)) ) * Time.deltaTime + (0.5f) * Time.deltaTime;
+            deltaPhi = randomGaussian + ( (sigma * sigma) / (2f * Mathf.Tan(phi)) ) * Time.deltaTime + (omegaPhi) * Time.deltaTime;
             
             randomGaussian = RandomFromStandardNormalDistribution() * 1f; //Constant can change
 
@@ -154,6 +172,13 @@ public class TargetMovementScript : MonoBehaviour {
             
 
         }
+
+        if ((phi < Mathf.PI/4f && deltaPhi < 0) || (phi > 3f*(Mathf.PI/4f) && deltaPhi > 0) )
+        {
+            deltaPhi = -deltaPhi;
+            omegaPhi = -omegaPhi;
+        }
+
         float randomGaussian2 = RandomNormalDistribution(0f, sigmar * Mathf.Sqrt(Time.deltaTime));
         deltaRadius = randomGaussian2;
 
@@ -162,12 +187,17 @@ public class TargetMovementScript : MonoBehaviour {
 
         theta += deltaTheta;
         phi += deltaPhi;
-        distanceFromCenter += deltaRadius * Time.deltaTime;
+        distanceFromCenter = radius + 1f * Mathf.Cos(4f * gameTime); //Harmonic oscillation
 
         transform.localPosition
         = new Vector3(distanceFromCenter * Mathf.Sin(phi) * Mathf.Cos(theta), distanceFromCenter * Mathf.Cos(phi) + radius, distanceFromCenter * Mathf.Sin(phi) * Mathf.Sin(theta));
         
-        */
+
+        ////
+        
+
+    */
+        /////////////////////////keep this:
         frameCount++;
 	}
 

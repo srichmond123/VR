@@ -1,0 +1,10 @@
+Time (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:,Left Hand Position x:,Left Hand Position y:,Left Hand Position z:,Left Hand rotation x:,Left Hand rotation y:,Left Hand rotation z:
+3.351549,0,-1,Peer missed,0,0,0,0,0,0,0.4598509,-0.3612161,-0.8851133,347.2025,74.69675,346.0224
+5.470262,0,0,Peer hit peer's target,0,0,0,0,0,0,0.4593081,-0.3618659,-0.8854213,343.2644,74.04626,345.7968
+6.076611,0,1,Peer hit peer's target,0,0,0,0,0,0,0.4593031,-0.3618419,-0.8853858,343.3083,74.01379,345.9965
+6.446137,0,2,Peer hit peer's target,0,0,0,0,0,0,0.4592729,-0.3618721,-0.8853924,343.1742,74.14262,345.9017
+8.225991,0,3,Peer hit peer's target,0,0,0,0,0,0,0.4604398,-0.3611958,-0.8856362,344.4103,61.95769,352.3944
+10.88555,0,4,Peer hit peer's target,0,0,0,0,0,0,0.4607535,-0.3614553,-0.8862152,342.7774,57.73347,352.6237
+13.86837,0,5,Peer hit peer's target,0,0,0,0,0,0,0.4606716,-0.3615158,-0.8862238,342.1319,56.88161,353.4769
+18.48863,0,4,Peer missed,0,0,0,0,0,0,0.4605468,-0.3616083,-0.8862346,341.6243,57.32265,353.3951
+38.04855,0,5,Peer hit peer's target,0,0,0,0,0,0,0.4648805,-0.3604259,-0.8689288,354.1198,130.6584,34.24648
