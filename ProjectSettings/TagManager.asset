@@ -8,6 +8,8 @@ TagManager:
   - VRCamera
   - UserTarget
   - PeerTarget
+  - RightHandLaser
+  - LeftHandLaser
   layers:
   - Default
   - TransparentFX

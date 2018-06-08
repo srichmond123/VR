@@ -23,73 +23,87 @@ public class GenerateTargetsScript : MonoBehaviour {
 	void Start () {
 
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		time += Time.deltaTime;
-        //totalTime += Time.deltaTime;
-		if (randomTimeUser < 0f) {
-			randomTimeUser = Random.Range (0.0f, 2.0f);
-		}
-        if (randomTimePeer < 0f)
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (TargetShootScript.playing)
         {
-            randomTimePeer = Random.Range(0.0f, 2.0f);
-        }
-		if (!generatedTargetForUser) {
-			if (time >= randomTimeUser) {
-				float radius = TargetMovementScript.radius;
 
-				//Now, uniformly choose random point on sphere, excluding bottom around feet:
-                
-                float thetaRealPlayer = Random.Range(0f, 2f * Mathf.PI);
-
-                float phiRealPlayer = Mathf.Acos (2f * Random.Range(0.146f, 1f) - 1f);
-
-                GameObject targetPrefReal = Instantiate (targetPrefab) as GameObject;
-				targetPrefReal.transform.localPosition
-				= new Vector3 (radius * Mathf.Sin (phiRealPlayer) * Mathf.Cos (thetaRealPlayer), radius * Mathf.Cos (phiRealPlayer) + 5, radius * Mathf.Sin (phiRealPlayer) * Mathf.Sin (thetaRealPlayer));
-				targetPrefReal.transform.LookAt (new Vector3 (0, 5, 0));
-                targetPrefReal.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material1;
-                targetPrefReal.tag = "UserTarget";
-
-                generatedTargetForUser = true;
-                //targetIndex++;
-			}
-		}
-        if (!generatedTargetForPeer)
-        {
-            if (time >= randomTimePeer)
+            time += Time.deltaTime;
+            //totalTime += Time.deltaTime;
+            if (randomTimeUser < 0f)
             {
-                float radius = TargetMovementScript.radius;
+                randomTimeUser = Random.Range(0.0f, 2.0f);
+            }
+            if (randomTimePeer < 0f)
+            {
+                randomTimePeer = Random.Range(0.0f, 2.0f);
+            }
+            if (!generatedTargetForUser)
+            {
+                if (time >= randomTimeUser)
+                {
+                    float radius = TargetMovementScript.radius;
 
-                //Now, uniformly choose random point on sphere, excluding bottom around feet:
+                    //Now, uniformly choose random point on sphere, excluding bottom around feet:
 
-                float thetaVirtualPeer = Random.Range(0f, 2f * Mathf.PI);
+                    float thetaRealPlayer = Random.Range(0.00001f, 2f * Mathf.PI);
 
-                float phiVirtualPeer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
+                    float phiRealPlayer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
 
-                GameObject targetPrefVirtual = Instantiate(targetPrefab) as GameObject;
-                targetPrefVirtual.transform.localPosition
-                = new Vector3(radius * Mathf.Sin(phiVirtualPeer) * Mathf.Cos(thetaVirtualPeer), radius * Mathf.Cos(phiVirtualPeer) + 5, radius * Mathf.Sin(phiVirtualPeer) * Mathf.Sin(thetaVirtualPeer));
-                targetPrefVirtual.transform.LookAt(new Vector3(0, 5, 0));
-                targetPrefVirtual.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material2;
-                targetPrefVirtual.tag = "PeerTarget";
+                    GameObject targetPrefReal = Instantiate(targetPrefab) as GameObject;
+                    targetPrefReal.transform.localPosition
+                    = new Vector3(radius * Mathf.Sin(phiRealPlayer) * Mathf.Cos(thetaRealPlayer), radius * Mathf.Cos(phiRealPlayer) + 5, radius * Mathf.Sin(phiRealPlayer) * Mathf.Sin(thetaRealPlayer));
+                    targetPrefReal.transform.LookAt(new Vector3(0, 5, 0));
+                    targetPrefReal.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material1;
+                    targetPrefReal.tag = "UserTarget";
+                    targetPrefReal.GetComponent<TargetMovementScript>().theta = thetaRealPlayer;
+                    targetPrefReal.GetComponent<TargetMovementScript>().phi = phiRealPlayer;
+
+                    generatedTargetForUser = true;
+                    //targetIndex++;
+                }
+            }
+            if (!generatedTargetForPeer)
+            {
+                if (time >= randomTimePeer)
+                {
+                    float radius = TargetMovementScript.radius;
+
+                    //Now, uniformly choose random point on sphere, excluding bottom around feet:
+
+                    float thetaVirtualPeer = Random.Range(0f, 2f * Mathf.PI);
+
+                    float phiVirtualPeer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
+
+                    GameObject targetPrefVirtual = Instantiate(targetPrefab) as GameObject;
+                    targetPrefVirtual.transform.localPosition
+                    = new Vector3(radius * Mathf.Sin(phiVirtualPeer) * Mathf.Cos(thetaVirtualPeer), radius * Mathf.Cos(phiVirtualPeer) + 5, radius * Mathf.Sin(phiVirtualPeer) * Mathf.Sin(thetaVirtualPeer));
+                    targetPrefVirtual.transform.LookAt(new Vector3(0, 5, 0));
+                    targetPrefVirtual.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material2;
+                    targetPrefVirtual.tag = "PeerTarget";
+                    targetPrefVirtual.GetComponent<TargetMovementScript>().theta = thetaVirtualPeer;
+                    targetPrefVirtual.GetComponent<TargetMovementScript>().phi = phiVirtualPeer;
 
 
-                generatedTargetForPeer = true;
-                //targetIndex++;
+                    generatedTargetForPeer = true;
+                    //targetIndex++;
+                }
+            }
+            if (generatedTargetForUser && generatedTargetForPeer)
+            {
+                if (time >= 2.0f)
+                {
+                    time -= 2.0f;
+                    generatedTargetForUser = false;
+                    generatedTargetForPeer = false;
+                    randomTimeUser = -1f;
+                    randomTimePeer = -1f;
+                }
             }
         }
-        if (generatedTargetForUser && generatedTargetForPeer) {
-			if (time >= 2.0f) {
-				time -= 2.0f;
-				generatedTargetForUser = false;
-                generatedTargetForPeer = false;
-				randomTimeUser = -1f;
-                randomTimePeer = -1f;
-			}
-		}
-	}
+    }
 }
 
 
