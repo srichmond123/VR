@@ -60,7 +60,7 @@ public class DataCollector : MonoBehaviour {
                 new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
                 streamWriter = new StreamWriter(path, true, Encoding.ASCII);
                 string handStr = "Left";
-                if (handAnchor.transform.GetChild(0).tag.Equals("RightHandLaser"))
+                if (handAnchor.transform.GetChild(1).tag.Equals("RightHandLaser"))
                     handStr = "Right";
                 streamWriter.Write("Time (s):,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
                     handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:," 
@@ -106,7 +106,7 @@ public class DataCollector : MonoBehaviour {
                 new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
                 streamWriter = new StreamWriter(path, true, Encoding.ASCII);
                 string handStr = "Left";
-                if (handAnchor.tag.Equals("RightHandAnchor"))
+                if (handAnchor.transform.GetChild(1).tag.Equals("RightHandLaser"))
                     handStr = "Right";
                 streamWriter.Write("Time (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
                     handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:,"

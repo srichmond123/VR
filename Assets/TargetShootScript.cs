@@ -124,7 +124,7 @@ public class TargetShootScript : MonoBehaviour {
     {
         playing = true;
         thisControllerInUse = true;
-        //DataCollector.collectingData = true;
+        DataCollector.collectingData = true;
         GameObject.Find("ControllerImage").SetActive(false);
         GameObject.Find("BeginText").SetActive(false);
         gameObject.transform.parent.GetChild(0).GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
