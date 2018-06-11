@@ -10,9 +10,11 @@ public class TargetShootScript : MonoBehaviour {
     public static Text scoreTextChangeFromOutside;
     public static bool playing = false; //On waiting screen:
     private bool thisControllerInUse = false;
+    AudioSource userAudioSource;
 	// Use this for initialization
 	void Start () {
         scoreTextChangeFromOutside = scoreText;
+        userAudioSource = GameObject.Find("User Audio Source").GetComponent<AudioSource>();
 ;	}
 
     // Update is called once per frame
@@ -21,6 +23,7 @@ public class TargetShootScript : MonoBehaviour {
         if (!playing)
         {
             GetComponent<MeshRenderer>().enabled = false;
+            gameObject.transform.parent.GetChild(0).GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
         }
 
         if (thisControllerInUse)
@@ -66,6 +69,7 @@ public class TargetShootScript : MonoBehaviour {
                         }
 
                     }
+                    userAudioSource.Play();
                     Destroy(hit.transform.parent.gameObject);
                 }
                 else
@@ -123,6 +127,7 @@ public class TargetShootScript : MonoBehaviour {
         //DataCollector.collectingData = true;
         GameObject.Find("ControllerImage").SetActive(false);
         GameObject.Find("BeginText").SetActive(false);
+        gameObject.transform.parent.GetChild(0).GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
         GetComponent<MeshRenderer>().enabled = true;
     }
 }

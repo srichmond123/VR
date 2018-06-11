@@ -135,8 +135,9 @@ public class TargetMovementScript : MonoBehaviour {
 
 		Vector3 targetDirection = transform.localPosition - cameraTransform.localPosition;
 		transform.RotateAround (transform.localPosition, Vector3.Cross (directionMovedIn, -transform.forward), Vector3.Angle(transform.forward, targetDirection) );
+        transform.GetChild(0).GetChild(0).LookAt(new Vector3(0, 100000, 0));
 
-		distanceFromCenter += deltaRadius * Time.deltaTime;
+        distanceFromCenter += deltaRadius * Time.deltaTime;
 
 		float newDistanceFromCenter = Vector3.Magnitude (transform.localPosition - cameraTransform.localPosition);
 		transform.localPosition += transform.forward * -(newDistanceFromCenter - distanceFromCenter);

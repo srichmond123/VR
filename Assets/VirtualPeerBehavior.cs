@@ -17,13 +17,15 @@ public class VirtualPeerBehavior : MonoBehaviour {
     int threshold = 0;
     public Text peerPointsText;
     public static Text peerTextChangeFromOutside;
+    AudioSource peerAudioSource;
 
 	// Use this for initialization
 	void Start () {
         noise = Random.Range(-1, 2); //-1, 0, or 1
         threshold = currPerformanceConstant + noise;
         peerTextChangeFromOutside = peerPointsText;
-	}
+        peerAudioSource = GameObject.Find("Peer Audio Source").GetComponent<AudioSource>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -44,6 +46,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                     GameObject[] peerTargets = GameObject.FindGameObjectsWithTag("PeerTarget");
                     if (peerTargets.Length != 0) //Destroy a random virtual peer target:
                     {
+                        peerAudioSource.Play();
                         Destroy(peerTargets[Random.Range(0, peerTargets.Length)]);
                         peerPoints++;
                         DataCollector.WriteEvent("Peer hit peer's target");
@@ -78,6 +81,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                     if (randomNum == 3 && userTargets.Length != 0)
                     {
                         Destroy(userTargets[Random.Range(0, userTargets.Length)]);
+                        peerAudioSource.Play();
                         peerPoints--;
                         TargetShootScript.userScore++;
                         DataCollector.WriteEvent("Peer hit user's target");

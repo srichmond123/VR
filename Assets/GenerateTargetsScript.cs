@@ -56,7 +56,8 @@ public class GenerateTargetsScript : MonoBehaviour {
                     targetPrefReal.transform.localPosition
                     = new Vector3(radius * Mathf.Sin(phiRealPlayer) * Mathf.Cos(thetaRealPlayer), radius * Mathf.Cos(phiRealPlayer) + 5, radius * Mathf.Sin(phiRealPlayer) * Mathf.Sin(thetaRealPlayer));
                     targetPrefReal.transform.LookAt(new Vector3(0, 5, 0));
-                    targetPrefReal.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material1;
+                    targetPrefReal.transform.GetChild(0).GetChild(0).LookAt(new Vector3(0, 100000, 0));
+                    targetPrefReal.transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material1;
                     targetPrefReal.tag = "UserTarget";
                     targetPrefReal.GetComponent<TargetMovementScript>().theta = thetaRealPlayer;
                     targetPrefReal.GetComponent<TargetMovementScript>().phi = phiRealPlayer;
@@ -81,7 +82,8 @@ public class GenerateTargetsScript : MonoBehaviour {
                     targetPrefVirtual.transform.localPosition
                     = new Vector3(radius * Mathf.Sin(phiVirtualPeer) * Mathf.Cos(thetaVirtualPeer), radius * Mathf.Cos(phiVirtualPeer) + 5, radius * Mathf.Sin(phiVirtualPeer) * Mathf.Sin(thetaVirtualPeer));
                     targetPrefVirtual.transform.LookAt(new Vector3(0, 5, 0));
-                    targetPrefVirtual.transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material2;
+                    targetPrefVirtual.transform.GetChild(0).GetChild(0).LookAt(new Vector3(0, 100000, 0));
+                    targetPrefVirtual.transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material2;
                     targetPrefVirtual.tag = "PeerTarget";
                     targetPrefVirtual.GetComponent<TargetMovementScript>().theta = thetaVirtualPeer;
                     targetPrefVirtual.GetComponent<TargetMovementScript>().phi = phiVirtualPeer;
