@@ -69,6 +69,7 @@ public class TargetShootScript : MonoBehaviour {
                         }
 
                     }
+                    userAudioSource.transform.localPosition = hit.transform.parent.localPosition;
                     userAudioSource.Play();
                     Destroy(hit.transform.parent.gameObject);
                 }

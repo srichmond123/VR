@@ -46,8 +46,10 @@ public class VirtualPeerBehavior : MonoBehaviour {
                     GameObject[] peerTargets = GameObject.FindGameObjectsWithTag("PeerTarget");
                     if (peerTargets.Length != 0) //Destroy a random virtual peer target:
                     {
+                        int randIndex = Random.Range(0, peerTargets.Length);
+                        peerAudioSource.transform.localPosition = peerTargets[randIndex].transform.localPosition;
                         peerAudioSource.Play();
-                        Destroy(peerTargets[Random.Range(0, peerTargets.Length)]);
+                        Destroy(peerTargets[randIndex]);
                         peerPoints++;
                         DataCollector.WriteEvent("Peer hit peer's target");
                         if (peerPoints < 10 && peerPoints > -10)
@@ -80,8 +82,10 @@ public class VirtualPeerBehavior : MonoBehaviour {
                     GameObject[] userTargets = GameObject.FindGameObjectsWithTag("UserTarget");
                     if (randomNum == 3 && userTargets.Length != 0)
                     {
-                        Destroy(userTargets[Random.Range(0, userTargets.Length)]);
+                        int randIndex = Random.Range(0, userTargets.Length);
+                        peerAudioSource.transform.localPosition = userTargets[randIndex].transform.localPosition;
                         peerAudioSource.Play();
+                        Destroy(userTargets[randIndex]);
                         peerPoints--;
                         TargetShootScript.userScore++;
                         DataCollector.WriteEvent("Peer hit user's target");
