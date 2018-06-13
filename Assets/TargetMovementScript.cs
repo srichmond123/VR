@@ -61,13 +61,11 @@ public class TargetMovementScript : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {
 
-
         
 
+		if (frameCount > 3) {
 
-		if (frameCount > 12) {
-
-            float randomGaussian = RandomFromStandardNormalDistribution () / 3.5f;
+            float randomGaussian = RandomFromStandardNormalDistribution () / 3.0f;
 			//randomGaussian = Mathf.Clamp (randomGaussian, -1.0f, 1.0f);
 			//if (randomGaussianIndex == randomGaussianArr.Length) {
 			//	randomGaussianIndex = 0;
@@ -76,10 +74,10 @@ public class TargetMovementScript : MonoBehaviour {
 			//if ((deltaX < 0 && deltaY < 0) || (deltaY > 0 && deltaX < 0))
 			//	relativeDirectionAngle += Mathf.PI;
 			
-			relativeDirectionAngle += randomGaussian * (Mathf.PI / 3.0f);
+			relativeDirectionAngle += randomGaussian * (Mathf.PI / 5.0f);
 			relativeDirectionAngle %= (Mathf.PI * 2f);
 
-			randomGaussian = RandomFromStandardNormalDistribution () * 2.5f; //Constant 0.5 can change
+			randomGaussian = RandomFromStandardNormalDistribution () * 3.0f; //Constant 0.5 can change
 
 			if (distanceFromCenter > radius + randomGaussian) {
 				deltaRadius = -0.75f;
@@ -143,10 +141,10 @@ public class TargetMovementScript : MonoBehaviour {
 		transform.localPosition += transform.forward * -(newDistanceFromCenter - distanceFromCenter);
 
         
-        
+        /*
         //New method: spherical coordinates
         ///////////////////
-        /*
+        
 
 
         gameTime += Time.deltaTime;

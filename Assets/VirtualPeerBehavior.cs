@@ -183,7 +183,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                 }
             }
 
-            if (gameTime >= 1f)
+            if (gameTime >= 2f)
             {
                 if (currPerformanceConstant != performanceConstant)
                 {

@@ -25,7 +25,7 @@ MonoBehaviour:
   m_MinSize: {x: 917, y: 442}
   m_MaxSize: {x: 22012, y: 10021}
   vertical: 0
-  controlID: 1011
+  controlID: 102
 --- !u!114 &2
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -81,7 +81,7 @@ MonoBehaviour:
       y: 17
       width: 659
       height: 349
-    m_Scale: {x: 1, y: 1}
+    m_Scale: {x: 0.93776476, y: 0.93776447}
     m_Translation: {x: 329.5, y: 174.5}
     m_MarginLeft: 0
     m_MarginRight: 0
@@ -89,10 +89,10 @@ MonoBehaviour:
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -329.5
-      y: -174.5
-      width: 659
-      height: 349
+      x: -351.36743
+      y: -186.08084
+      width: 702.73486
+      height: 372.16168
     m_MinimalGUI: 1
   m_defaultScale: 1
   m_TargetTexture: {fileID: 0}
@@ -124,7 +124,7 @@ MonoBehaviour:
   m_MinSize: {x: 202, y: 442}
   m_MaxSize: {x: 4002, y: 8042}
   vertical: 1
-  controlID: 990
+  controlID: 103
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -177,14 +177,14 @@ MonoBehaviour:
     height: 343
   m_PersistentViewDataDictionary: {fileID: 0}
   m_SceneLighting: 1
-  lastFramingTime: 27.666047241657676
+  lastFramingTime: 1318.9437369048926
   m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 3.7281523, y: 5.9180007, z: 7.9119215}
+    m_Target: {x: -15.948355, y: -1.1956487, z: 17.47936}
     speed: 2
-    m_Value: {x: 3.7281523, y: 5.9180007, z: 7.9119215}
+    m_Value: {x: -15.948355, y: -1.1956487, z: 17.47936}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -212,13 +212,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: 0.002647372, y: 0.47001165, z: 0.0014096595, w: -0.88265514}
+    m_Target: {x: -0.12201768, y: 0.37165534, z: -0.049345832, w: -0.9189935}
     speed: 2
-    m_Value: {x: 0.0026473717, y: 0.47001162, z: 0.0014096594, w: -0.88265514}
+    m_Value: {x: -0.12201768, y: 0.37165534, z: -0.049345832, w: -0.9189935}
   m_Size:
-    m_Target: 14.942605
+    m_Target: 21.581108
     speed: 2
-    m_Value: 14.942605
+    m_Value: 21.581108
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -332,9 +332,9 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 8a130000
-    m_LastClickedID: 5002
-    m_ExpandedIDs: fafafffffcfafffff0fbffff00000000
+    m_SelectedIDs: e0120000
+    m_LastClickedID: 4832
+    m_ExpandedIDs: d8faffffecfafffffafafffffcfafffff0fbffff000000004c130000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -421,19 +421,19 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/Oculus/Spatializer/Scenes/mixers
+    - Assets
   m_ViewMode: 1
   m_StartGridSize: 38
   m_LastFolders:
-  - Assets/Oculus/Spatializer/Scenes/mixers
+  - Assets
   m_LastFoldersGridSize: 38
   m_LastProjectPath: C:\Users\pooja\Documents\GitHub\VR
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 0c0d0000
-    m_LastClickedID: 3340
+    m_SelectedIDs: 640b0000
+    m_LastClickedID: 2916
     m_ExpandedIDs: 00000000640b00006a0b0000ba0b0000220c0000380c00004a0c00006c0c0000140d0000aa0d0000b60d00003a0f00008c0f00004c100000e210000056110000e01100001812000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -462,7 +462,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000640b00006a0b0000ba0b0000220c0000380c00004a0c00006c0c0000140d0000aa0d0000b60d00003a0f00008c0f00004c100000e210000056110000e01100001812000000ca9a3bffffff7f
+    m_ExpandedIDs: 00000000640b00006a0b0000ba0b0000220c0000380c00004a0c00006c0c0000140d0000aa0d0000b60d00003a0f00008c0f00004c100000e210000056110000e011000018120000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -487,8 +487,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 8a130000
-    m_LastClickedInstanceID: 5002
+    m_SelectedInstanceIDs: e0120000
+    m_LastClickedInstanceID: 4832
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: 7283000020340000a655fcfff0280000f4590000c0060000be370000300c0000e8aef9ff460c0000000000005e340000640c0000fa21f4ffde0f00002c100000
     m_RenameOverlay:
