@@ -10,6 +10,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
     int currPerformanceConstant = 0;
     float time = 0f;
     float timeChangeRandomNoise = 0f;
+    float randomNoiseScheduledChangeTime = 0f;
     float gameTime = 0f;
     float nextActionTime = -1f;
     bool gainPointsNextAction = false;
@@ -21,7 +22,8 @@ public class VirtualPeerBehavior : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        noise = Random.Range(-1, 2); //-1, 0, or 1
+        noise = Random.Range(-3, 4); //-3, -2, -1, 0, 1, 2, or 3
+        randomNoiseScheduledChangeTime = Random.Range(3f, 5f);
         threshold = currPerformanceConstant + noise;
         peerTextChangeFromOutside = peerPointsText;
         peerAudioSource = GameObject.Find("Peer Audio Source").GetComponent<AudioSource>();
@@ -52,6 +54,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                         Destroy(peerTargets[randIndex]);
                         peerPoints++;
                         DataCollector.WriteEvent("Peer hit peer's target");
+                        GenerateTargetsScript.numPeerTargets--;
                         if (peerPoints < 10 && peerPoints > -10)
                         {
                             if (peerPoints >= 0)
@@ -78,9 +81,9 @@ public class VirtualPeerBehavior : MonoBehaviour {
                 else
                 {
                     //Either miss (3/4 chance) or hit user's target (1/4 chance):
-                    int randomNum = Random.Range(0, 4); //0, 1, 2, or 3
+                    int randomNum = Random.Range(0, 8);
                     GameObject[] userTargets = GameObject.FindGameObjectsWithTag("UserTarget");
-                    if (randomNum == 3 && userTargets.Length != 0)
+                    if (randomNum == 7 && userTargets.Length != 0)
                     {
                         int randIndex = Random.Range(0, userTargets.Length);
                         peerAudioSource.transform.localPosition = userTargets[randIndex].transform.localPosition;
@@ -89,6 +92,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                         peerPoints--;
                         TargetShootScript.userScore++;
                         DataCollector.WriteEvent("Peer hit user's target");
+                        GenerateTargetsScript.numUserTargets--;
                         if (TargetShootScript.userScore < 10 && TargetShootScript.userScore > -10)
                         {
                             if (TargetShootScript.userScore >= 0)
@@ -195,11 +199,12 @@ public class VirtualPeerBehavior : MonoBehaviour {
                 gameTime = 0f;
             }
 
-            if (timeChangeRandomNoise >= 5f)
+            if (timeChangeRandomNoise >= randomNoiseScheduledChangeTime)
             {
-                noise = Random.Range(-1, 2); //-1, 0, 1
+                noise = Random.Range(-3, 4);
                 threshold = currPerformanceConstant + noise;
                 timeChangeRandomNoise = 0f;
+                randomNoiseScheduledChangeTime = Random.Range(3f, 5f);
             }
         }
     }

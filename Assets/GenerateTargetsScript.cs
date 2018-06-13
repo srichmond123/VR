@@ -9,8 +9,14 @@ public class GenerateTargetsScript : MonoBehaviour {
 	// Use this for initialization
 
 	public GameObject targetPrefab;
-	float time = 0.0f;
-	int targetIndex = 0;
+    //float time = 0.0f;
+    float timeUser = 0.0f;
+    float timePeer = 0.0f;
+    float userRandomNoiseTimer = 0.0f;
+    float userTimeUntilNextRandomNoiseAssignment = 0f;
+    float peerRandomNoiseTimer = 0.0f;
+    float peerTimeUntilNextRandomNoiseAssignment = 0f;
+    int targetIndex = 0;
 	public static int totalTrajectories = 500;
 	bool generatedTargetForUser = false; //So more than 1 aren't generated in the interval
     bool generatedTargetForPeer = false;
@@ -20,8 +26,38 @@ public class GenerateTargetsScript : MonoBehaviour {
     public Material material2;
     float totalTime = 0f;
 
+    public static int numUserTargets = 0;
+    public static int numPeerTargets = 0;
+    public int userTargetsCap = 6;
+    int userTargetsNoise = 0; //-2 through 2, equal prob.
+    public int peerTargetsCap = 6;
+    int peerTargetsNoise = 0; //-2 through 2, equal prob.
+
+    public static float userInterval = 2.0f;
+    public static float peerInterval = 2.0f;
+
+
+
+    ////////////
+    //Toggle these to change how targets are generated, only make 1 true:
+    ////////////
+
+    public static bool normalMode = false; //Targets generated in 2 second intervals with uniform probability
+    public static bool increaseIntervalBasedOnDensityMode = false; //Targets generated in X second intervals with intervals increasing with number of targets existing
+    public static bool constantBalloonsWithNoise = true; //A constant of X + w user&peer balloons should exist on average in this mode
+
 	void Start () {
 
+        userTimeUntilNextRandomNoiseAssignment = Random.Range(3f, 5f);
+        peerTimeUntilNextRandomNoiseAssignment = Random.Range(3f, 5f);
+        userTargetsNoise = Random.Range(-1, 2); //-2 through 2, equal prob.
+        peerTargetsNoise = Random.Range(-1, 2); //-2 through 2, equal prob.
+
+        if (constantBalloonsWithNoise)
+        {
+            userInterval = 0.8f;
+            peerInterval = 0.8f;
+        }
 	}
 
     // Update is called once per frame
@@ -29,26 +65,40 @@ public class GenerateTargetsScript : MonoBehaviour {
     {
         if (TargetShootScript.playing)
         {
+            userRandomNoiseTimer += Time.deltaTime;
+            peerRandomNoiseTimer += Time.deltaTime;
 
-            time += Time.deltaTime;
-            //totalTime += Time.deltaTime;
+            timeUser += Time.deltaTime;
+            timePeer += Time.deltaTime;
+
+            if (increaseIntervalBasedOnDensityMode)
+            {
+                userInterval = 2f + (0.5f * numUserTargets);
+                peerInterval = 2f + (0.5f * numPeerTargets);
+            }
             if (randomTimeUser < 0f)
             {
-                randomTimeUser = Random.Range(0.0f, 2.0f);
+                if (!constantBalloonsWithNoise || numUserTargets < userTargetsCap + userTargetsNoise)
+                {
+                    randomTimeUser = Random.Range(0.0f, userInterval);
+                }
             }
             if (randomTimePeer < 0f)
             {
-                randomTimePeer = Random.Range(0.0f, 2.0f);
+                if (!constantBalloonsWithNoise || numPeerTargets < peerTargetsCap + peerTargetsNoise)
+                {
+                    randomTimePeer = Random.Range(0.0f, peerInterval);
+                }
             }
             if (!generatedTargetForUser)
             {
-                if (time >= randomTimeUser)
+                if (timeUser >= randomTimeUser && randomTimeUser > 0f)
                 {
                     float radius = TargetMovementScript.radius;
 
                     //Now, uniformly choose random point on sphere, excluding bottom around feet:
 
-                    float thetaRealPlayer = Random.Range(0.00001f, 2f * Mathf.PI);
+                    float thetaRealPlayer = Random.Range(0f, 2f * Mathf.PI);
 
                     float phiRealPlayer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
 
@@ -61,6 +111,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                     targetPrefReal.tag = "UserTarget";
                     targetPrefReal.GetComponent<TargetMovementScript>().theta = thetaRealPlayer;
                     targetPrefReal.GetComponent<TargetMovementScript>().phi = phiRealPlayer;
+                    numUserTargets++;
 
                     generatedTargetForUser = true;
                     //targetIndex++;
@@ -68,7 +119,7 @@ public class GenerateTargetsScript : MonoBehaviour {
             }
             if (!generatedTargetForPeer)
             {
-                if (time >= randomTimePeer)
+                if (timePeer >= randomTimePeer && randomTimePeer > 0f)
                 {
                     float radius = TargetMovementScript.radius;
 
@@ -87,22 +138,44 @@ public class GenerateTargetsScript : MonoBehaviour {
                     targetPrefVirtual.tag = "PeerTarget";
                     targetPrefVirtual.GetComponent<TargetMovementScript>().theta = thetaVirtualPeer;
                     targetPrefVirtual.GetComponent<TargetMovementScript>().phi = phiVirtualPeer;
+                    numPeerTargets++;
 
 
                     generatedTargetForPeer = true;
                     //targetIndex++;
                 }
             }
-            if (generatedTargetForUser && generatedTargetForPeer)
+            if (generatedTargetForUser)
             {
-                if (time >= 2.0f)
+                if (timeUser >= userInterval || constantBalloonsWithNoise) //With constant balloons mode, it wouldn't be about intervals so much as getting balloons in the game
                 {
-                    time -= 2.0f;
+                    timeUser = 0f;
                     generatedTargetForUser = false;
-                    generatedTargetForPeer = false;
                     randomTimeUser = -1f;
+                }
+            }
+            if (generatedTargetForPeer)
+            {
+                if (timePeer >= peerInterval || constantBalloonsWithNoise)
+                {
+                    timePeer = 0f;
+                    generatedTargetForPeer = false;
                     randomTimePeer = -1f;
                 }
+            }
+
+            //Random noise for constant amount of balloons:
+            if (userTimeUntilNextRandomNoiseAssignment >= userRandomNoiseTimer)
+            {
+                userTargetsNoise = Random.Range(-1, 2);
+                userTimeUntilNextRandomNoiseAssignment = Random.Range(3f, 5f);
+                userRandomNoiseTimer = 0f;
+            }
+            if (peerTimeUntilNextRandomNoiseAssignment >= peerRandomNoiseTimer)
+            {
+                peerTargetsNoise = Random.Range(-1, 2);
+                peerTimeUntilNextRandomNoiseAssignment = Random.Range(3f, 5f);
+                peerRandomNoiseTimer = 0f;
             }
         }
     }

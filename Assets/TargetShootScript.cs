@@ -39,12 +39,14 @@ public class TargetShootScript : MonoBehaviour {
                     {
                         userScore++;
                         DataCollector.WriteEvent("User hit user's target");
+                        GenerateTargetsScript.numUserTargets--;
                     }
                     else
                     {
                         userScore--;
                         VirtualPeerBehavior.peerPoints++;
                         DataCollector.WriteEvent("User hit peer's target");
+                        GenerateTargetsScript.numPeerTargets--;
 
                         if (VirtualPeerBehavior.peerPoints < 10 && VirtualPeerBehavior.peerPoints > -10)
                         {

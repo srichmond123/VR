@@ -799,6 +799,8 @@ MonoBehaviour:
     type: 2}
   material1: {fileID: 2100000, guid: 29ea2c9893f58d34a90a649c51be2462, type: 2}
   material2: {fileID: 2100000, guid: 8d7450cbbcdfa544e8f869004a234ec4, type: 2}
+  userTargetsCap: 3
+  peerTargetsCap: 3
 --- !u!4 &544986429
 Transform:
   m_ObjectHideFlags: 0
@@ -1072,7 +1074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3f98d0b90fbccf4daa86a353ebacec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  performanceConstant: 5
+  performanceConstant: 2
   peerPointsText: {fileID: 654963439}
 --- !u!4 &971153552
 Transform:
