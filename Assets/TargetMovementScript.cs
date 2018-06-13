@@ -18,7 +18,7 @@ public class TargetMovementScript : MonoBehaviour {
 	float deltaY = 1.0f;
 	float deltaRadius = 0.0f;
 	float distanceFromCenter = 5.0f;
-	int changeAngleFrames = 50;  //Change this to modify how frequently the angle changes
+	int changeAngleFrames = 49;  //Change this to modify how frequently the angle changes
 
 	public float relativeDirectionAngle;
 	public float goalDirectionAngle;
@@ -107,16 +107,18 @@ public class TargetMovementScript : MonoBehaviour {
 
 			oldDirectionAngle = relativeDirectionAngle;
 
-			randomGaussian = RandomFromStandardNormalDistribution () * 3.0f; //Constant can change
-
-			if (distanceFromCenter > radius + randomGaussian) {
-				deltaRadius = -0.75f;
-			} else {
-				deltaRadius = 0.75f;
-			}
-
 			frameCount = 0;
 		}
+
+        if (frameCount % 10 == 0) {
+            float randomGaussianRadius = RandomFromStandardNormalDistribution () * 3.0f; //Constant can change
+
+            if (distanceFromCenter > radius + randomGaussianRadius) {
+                deltaRadius = -0.75f;
+            } else {
+                deltaRadius = 0.75f;
+            }
+        }
 			
 		//Gradually change angle at t to intended angle at t+deltat:
 		relativeDirectionAngle += step;
