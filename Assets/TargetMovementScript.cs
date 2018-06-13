@@ -18,8 +18,12 @@ public class TargetMovementScript : MonoBehaviour {
 	float deltaY = 1.0f;
 	float deltaRadius = 0.0f;
 	float distanceFromCenter = 5.0f;
+	int changeAngleFrames = 50;  //Change this to modify how frequently the angle changes
 
 	public float relativeDirectionAngle;
+	public float goalDirectionAngle;
+	public float oldDirectionAngle;
+	public float step = 0f;
 
 	public static float radius = 5.0f;
 
@@ -52,6 +56,8 @@ public class TargetMovementScript : MonoBehaviour {
         cameraTransform = GameObject.FindGameObjectWithTag("VRCamera").transform;
 		oldY = transform.localPosition.y;
 
+		frameCount = 41; //Change goalDirectionAngle immediately so it begins by gradually changing angle
+		goalDirectionAngle = relativeDirectionAngle;
 
         //New spherical method:
         omegaPhi = Random.Range(-1f, 1f);
@@ -63,9 +69,9 @@ public class TargetMovementScript : MonoBehaviour {
 
         
 
-		if (frameCount > 3) {
+		if (frameCount > changeAngleFrames) {
 
-            float randomGaussian = RandomFromStandardNormalDistribution () / 3.0f;
+            float randomGaussian = RandomFromStandardNormalDistribution () / 2.0f;
 			//randomGaussian = Mathf.Clamp (randomGaussian, -1.0f, 1.0f);
 			//if (randomGaussianIndex == randomGaussianArr.Length) {
 			//	randomGaussianIndex = 0;
@@ -74,10 +80,34 @@ public class TargetMovementScript : MonoBehaviour {
 			//if ((deltaX < 0 && deltaY < 0) || (deltaY > 0 && deltaX < 0))
 			//	relativeDirectionAngle += Mathf.PI;
 			
-			relativeDirectionAngle += randomGaussian * (Mathf.PI / 5.0f);
-			relativeDirectionAngle %= (Mathf.PI * 2f);
+			goalDirectionAngle += randomGaussian * (Mathf.PI / 1.0f);
 
-			randomGaussian = RandomFromStandardNormalDistribution () * 3.0f; //Constant 0.5 can change
+			goalDirectionAngle %= (Mathf.PI * 2f);
+			if (goalDirectionAngle < 0) {
+				goalDirectionAngle += Mathf.PI * 2f;
+			}
+
+
+			float totalChange; //totalChange/40 = step size, must make sure it's in the right direction too:
+			if (Mathf.Abs (goalDirectionAngle - relativeDirectionAngle) > Mathf.PI) { //Should take shortest path:
+				totalChange = Mathf.PI * 2f - Mathf.Abs (goalDirectionAngle - relativeDirectionAngle);
+			} else {
+				totalChange = Mathf.Abs (goalDirectionAngle - relativeDirectionAngle);
+			}
+			if (goalDirectionAngle > relativeDirectionAngle && Mathf.Abs (goalDirectionAngle - relativeDirectionAngle) > Mathf.PI) {
+				step = -1f;
+			} else if (goalDirectionAngle > relativeDirectionAngle) {
+				step = 1f;
+			} else if (goalDirectionAngle < relativeDirectionAngle && Mathf.Abs (goalDirectionAngle - relativeDirectionAngle) > Mathf.PI) {
+				step = 1f;
+			} else {
+				step = -1f;
+			}
+			step *= totalChange / (changeAngleFrames * 1f);
+
+			oldDirectionAngle = relativeDirectionAngle;
+
+			randomGaussian = RandomFromStandardNormalDistribution () * 3.0f; //Constant can change
 
 			if (distanceFromCenter > radius + randomGaussian) {
 				deltaRadius = -0.75f;
@@ -87,6 +117,9 @@ public class TargetMovementScript : MonoBehaviour {
 
 			frameCount = 0;
 		}
+			
+		//Gradually change angle at t to intended angle at t+deltat:
+		relativeDirectionAngle += step;
 
 
         if ( (transform.localPosition.y < 3.0f && transform.localPosition.y - oldY < 0f) ||
@@ -115,6 +148,7 @@ public class TargetMovementScript : MonoBehaviour {
 		} else if (turns > 0 && transform.localPosition.y > 3.2f) {
 			turns = 0;
 		}
+
 			
 		deltaY = velocity * Mathf.Sin (relativeDirectionAngle);
 		deltaX = velocity * Mathf.Cos (relativeDirectionAngle);
@@ -140,7 +174,11 @@ public class TargetMovementScript : MonoBehaviour {
 		float newDistanceFromCenter = Vector3.Magnitude (transform.localPosition - cameraTransform.localPosition);
 		transform.localPosition += transform.forward * -(newDistanceFromCenter - distanceFromCenter);
 
-        
+		relativeDirectionAngle %= (Mathf.PI * 2f);
+		if (relativeDirectionAngle < 0) {
+			relativeDirectionAngle += Mathf.PI * 2f;
+		}
+
         /*
         //New method: spherical coordinates
         ///////////////////
