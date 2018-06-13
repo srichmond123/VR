@@ -125,8 +125,8 @@ public class TargetMovementScript : MonoBehaviour {
         if ( (transform.localPosition.y < 3.0f && transform.localPosition.y - oldY < 0f) ||
             (transform.localPosition.y > 8.2f && transform.localPosition.y - oldY > 0f)) { //Start turning smoothly if it's in the prohibited zone and moving down/up into it:
             turns++;
-            float addAngle = relativeDirectionAngle + Mathf.PI / 45.0f;
-            float subAngle = relativeDirectionAngle - Mathf.PI / 45.0f;
+            float addAngle = relativeDirectionAngle + Mathf.PI / 50.0f;
+            float subAngle = relativeDirectionAngle - Mathf.PI / 50.0f;
             Vector3 newPosAdd = transform.localPosition;
             newPosAdd += transform.right * velocity * Mathf.Cos(addAngle) * Time.deltaTime;
             newPosAdd += transform.up * velocity * Mathf.Sin(addAngle) * Time.deltaTime;
@@ -138,10 +138,16 @@ public class TargetMovementScript : MonoBehaviour {
             if ( (transform.localPosition.y < 3.0f && newPosAdd.y > newPosSub.y) 
                 || (transform.localPosition.y > 8.2f && newPosAdd.y < newPosSub.y))
             {
+                if (step < 0) {
+                    step = -step;
+                }
                 relativeDirectionAngle = addAngle;
             }
             else
             {
+                if (step > 0) {
+                    step = -step;
+                }
                 relativeDirectionAngle = subAngle;
             }
             		
