@@ -40,12 +40,14 @@ public class TargetShootScript : MonoBehaviour {
                         userScore++;
                         DataCollector.WriteEvent("User hit user's target");
                         GenerateTargetsScript.numUserTargets--;
+                        GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.blue);
                     }
                     else
                     {
                         userScore--;
                         VirtualPeerBehavior.peerPoints++;
                         DataCollector.WriteEvent("User hit peer's target");
+                        GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.red);
                         GenerateTargetsScript.numPeerTargets--;
 
                         if (VirtualPeerBehavior.peerPoints < 10 && VirtualPeerBehavior.peerPoints > -10)
@@ -127,7 +129,7 @@ public class TargetShootScript : MonoBehaviour {
     {
         playing = true;
         thisControllerInUse = true;
-        DataCollector.collectingData = true;
+        //DataCollector.collectingData = true;
         GameObject.Find("ControllerImage").SetActive(false);
         GameObject.Find("BeginText").SetActive(false);
         gameObject.transform.parent.GetChild(0).GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;

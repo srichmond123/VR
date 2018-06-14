@@ -54,6 +54,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                         Destroy(peerTargets[randIndex]);
                         peerPoints++;
                         DataCollector.WriteEvent("Peer hit peer's target");
+                        GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.red);
                         GenerateTargetsScript.numPeerTargets--;
                         if (peerPoints < 10 && peerPoints > -10)
                         {
@@ -92,6 +93,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                         peerPoints--;
                         TargetShootScript.userScore++;
                         DataCollector.WriteEvent("Peer hit user's target");
+                        GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.blue);
                         GenerateTargetsScript.numUserTargets--;
                         if (TargetShootScript.userScore < 10 && TargetShootScript.userScore > -10)
                         {

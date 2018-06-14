@@ -15,6 +15,7 @@ public class DataCollector : MonoBehaviour {
     static GameObject handAnchor;
     static int userID;
     static float time;
+    public bool makeUserPath = false;
     public static bool collectingData = false;
 
     int userPoints = 0;
@@ -22,14 +23,17 @@ public class DataCollector : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        ctrCamera = GameObject.Find("CenterEyeAnchor");
+        if (makeUserPath)
+        {
+            ctrCamera = GameObject.Find("CenterEyeAnchor");
 
-        //Right handed:
-        Directory.CreateDirectory(dataPath);
-        userID = Directory.GetDirectories(dataPath).Length;
+            //Right handed:
+            Directory.CreateDirectory(dataPath);
+            userID = Directory.GetDirectories(dataPath).Length;
 
-        userPath = dataPath + "User-" + userID + '/';
-        Directory.CreateDirectory(userPath);
+            userPath = dataPath + "User-" + userID + '/';
+            Directory.CreateDirectory(userPath);
+        }
 
     }
 	

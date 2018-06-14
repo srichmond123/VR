@@ -42,9 +42,9 @@ public class GenerateTargetsScript : MonoBehaviour {
     //Toggle these to change how targets are generated, only make 1 true:
     ////////////
 
-    public static bool normalMode = false; //Targets generated in 2 second intervals with uniform probability
-    public static bool increaseIntervalBasedOnDensityMode = false; //Targets generated in X second intervals with intervals increasing with number of targets existing
-    public static bool constantBalloonsWithNoise = true; //A constant of X + w user&peer balloons should exist on average in this mode
+    public bool normalMode = false; //Targets generated in 2 second intervals with uniform probability
+    public bool increaseIntervalBasedOnDensityMode = true; //Targets generated in X second intervals with intervals increasing with number of targets existing
+    public bool constantBalloonsWithNoise = false; //A constant of X + w user&peer balloons should exist on average in this mode
 
 	void Start () {
 

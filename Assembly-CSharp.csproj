@@ -292,6 +292,7 @@
     <Compile Include="Assets\RandomFromDistributions\Examples\Monster Spawner Example\Monster.cs" />
     <Compile Include="Assets\RandomFromDistributions\Examples\Monster Spawner Example\MonsterSpawner.cs" />
     <Compile Include="Assets\RandomFromDistributions\Scripts\RandomFromDistribution.cs" />
+    <Compile Include="Assets\ScoreFlashScript.cs" />
     <Compile Include="Assets\SkySphere_V1\Examples\Gui.cs" />
     <Compile Include="Assets\SkySphere_V1\Examples\MouseLook.cs" />
     <Compile Include="Assets\TargetMovementScript.cs" />

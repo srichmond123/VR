@@ -71,7 +71,7 @@ public class TargetMovementScript : MonoBehaviour {
 
 		if (frameCount > changeAngleFrames) {
 
-            float randomGaussian = RandomFromStandardNormalDistribution () / 2.0f;
+            float randomGaussian = RandomFromStandardNormalDistribution();
 			//randomGaussian = Mathf.Clamp (randomGaussian, -1.0f, 1.0f);
 			//if (randomGaussianIndex == randomGaussianArr.Length) {
 			//	randomGaussianIndex = 0;
@@ -80,7 +80,7 @@ public class TargetMovementScript : MonoBehaviour {
 			//if ((deltaX < 0 && deltaY < 0) || (deltaY > 0 && deltaX < 0))
 			//	relativeDirectionAngle += Mathf.PI;
 			
-			goalDirectionAngle += randomGaussian * (Mathf.PI / 1.0f);
+			goalDirectionAngle += randomGaussian * (Mathf.PI / 3.0f);
 
 			goalDirectionAngle %= (Mathf.PI * 2f);
 			if (goalDirectionAngle < 0) {
