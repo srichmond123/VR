@@ -10,6 +10,9 @@ TagManager:
   - PeerTarget
   - RightHandLaser
   - LeftHandLaser
+  - BalloonUIElementBlue
+  - BalloonUIElementRed
+  - Destroying
   layers:
   - Default
   - TransparentFX

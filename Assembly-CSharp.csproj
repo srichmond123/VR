@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\BalloonUIBehavior.cs" />
     <Compile Include="Assets\DataCollector.cs" />
     <Compile Include="Assets\GenerateTargetsScript.cs" />
     <Compile Include="Assets\Oculus\AudioManager\Scenes\Scripts\TestScript.cs" />
@@ -281,6 +282,7 @@
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRScreenFade.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRTrackedRemote.cs" />
     <Compile Include="Assets\Oculus\VR\Scripts\Util\OVRWaitCursor.cs" />
+    <Compile Include="Assets\PieGraphScript.cs" />
     <Compile Include="Assets\RandomFromDistributions\Examples\DistributionsExamples\CurveTestScript.cs" />
     <Compile Include="Assets\RandomFromDistributions\Examples\DistributionsExamples\CustomPDFTestScript.cs" />
     <Compile Include="Assets\RandomFromDistributions\Examples\DistributionsExamples\DistributionTestScript.cs" />

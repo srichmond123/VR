@@ -11,6 +11,9 @@ public class TargetShootScript : MonoBehaviour {
     public static bool playing = false; //On waiting screen:
     private bool thisControllerInUse = false;
     AudioSource userAudioSource;
+
+    public GameObject blueBalloonUIElement;
+    public GameObject redBalloonUIElement;
 	// Use this for initialization
 	void Start () {
         scoreTextChangeFromOutside = scoreText;
@@ -35,20 +38,45 @@ public class TargetShootScript : MonoBehaviour {
                 if (Physics.Raycast(transform.parent.position, transform.parent.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
                 {
                     //Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.red);
-                    if (hit.transform.parent.tag.Equals("UserTarget"))
+                    if (hit.transform.parent.parent.parent.tag.Equals("UserTarget"))
                     {
                         userScore++;
                         DataCollector.WriteEvent("User hit user's target");
                         GenerateTargetsScript.numUserTargets--;
                         GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.blue);
+
+                        /*
+                        GameObject pref = Instantiate(blueBalloonUIElement);
+                        pref.transform.localPosition = hit.transform.parent.transform.localPosition;
+                        pref.transform.localPosition = Vector3.Lerp(pref.transform.localPosition, new Vector3(0, 5, 0), 0.65f);
+                        pref.transform.SetParent(GameObject.Find("Canvas").transform);
+                        */
+                        userAudioSource.transform.localPosition = hit.transform.parent.parent.parent.localPosition;
+                        userAudioSource.Play();
+                        //Destroy(hit.transform.parent.gameObject);
+                        SetLayerRecursively(hit.transform.parent.parent.parent.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
+                        hit.transform.parent.parent.parent.tag = "Destroying";
                     }
-                    else
+                    else if (hit.transform.parent.parent.parent.tag.Equals("PeerTarget"))
                     {
                         userScore--;
+                        userScore = Mathf.Max(0, userScore);
                         VirtualPeerBehavior.peerPoints++;
                         DataCollector.WriteEvent("User hit peer's target");
                         GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.red);
                         GenerateTargetsScript.numPeerTargets--;
+
+                        /*
+                        GameObject pref = Instantiate(redBalloonUIElement);
+                        pref.transform.localPosition = hit.transform.parent.transform.localPosition;
+                        pref.transform.localPosition = Vector3.Lerp(pref.transform.localPosition, new Vector3(0, 5, 0), 0.65f);
+                        pref.transform.SetParent(GameObject.Find("Canvas").transform);
+                        */
+                        userAudioSource.transform.localPosition = hit.transform.parent.parent.parent.localPosition;
+                        userAudioSource.Play();
+                        //Destroy(hit.transform.parent.gameObject);
+                        SetLayerRecursively(hit.transform.parent.parent.parent.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
+                        hit.transform.parent.parent.parent.tag = "Destroying";
 
                         if (VirtualPeerBehavior.peerPoints < 10 && VirtualPeerBehavior.peerPoints > -10)
                         {
@@ -73,13 +101,11 @@ public class TargetShootScript : MonoBehaviour {
                         }
 
                     }
-                    userAudioSource.transform.localPosition = hit.transform.parent.localPosition;
-                    userAudioSource.Play();
-                    Destroy(hit.transform.parent.gameObject);
                 }
                 else
                 {
                     userScore--;
+                    userScore = Mathf.Max(0, userScore);
                     //Debug.DrawRay(transform.parent.transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.red);
                     //Debug.Log("Did not Hit");
                     DataCollector.WriteEvent("User missed");
@@ -134,5 +160,24 @@ public class TargetShootScript : MonoBehaviour {
         GameObject.Find("BeginText").SetActive(false);
         gameObject.transform.parent.GetChild(0).GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
         GetComponent<MeshRenderer>().enabled = true;
+    }
+
+    void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        if (null == obj)
+        {
+            return;
+        }
+
+        obj.layer = newLayer;
+
+        foreach (Transform child in obj.transform)
+        {
+            if (null == child)
+            {
+                continue;
+            }
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
     }
 }

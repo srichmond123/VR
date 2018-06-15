@@ -28,9 +28,9 @@ public class GenerateTargetsScript : MonoBehaviour {
 
     public static int numUserTargets = 0;
     public static int numPeerTargets = 0;
-    public int userTargetsCap = 6;
+    public int userTargetsCap;
     int userTargetsNoise = 0; //-2 through 2, equal prob.
-    public int peerTargetsCap = 6;
+    public int peerTargetsCap;
     int peerTargetsNoise = 0; //-2 through 2, equal prob.
 
     public static float userInterval = 2.0f;
@@ -42,21 +42,21 @@ public class GenerateTargetsScript : MonoBehaviour {
     //Toggle these to change how targets are generated, only make 1 true:
     ////////////
 
-    public bool normalMode = false; //Targets generated in 2 second intervals with uniform probability
-    public bool increaseIntervalBasedOnDensityMode = true; //Targets generated in X second intervals with intervals increasing with number of targets existing
-    public bool constantBalloonsWithNoise = false; //A constant of X + w user&peer balloons should exist on average in this mode
+    public bool normalMode; //Targets generated in 2 second intervals with uniform probability
+    public bool increaseIntervalBasedOnDensityMode; //Targets generated in X second intervals with intervals increasing with number of targets existing
+    public bool constantBalloonsWithNoise; //A constant of X + w user&peer balloons should exist on average in this mode
 
 	void Start () {
 
-        userTimeUntilNextRandomNoiseAssignment = Random.Range(3f, 5f);
-        peerTimeUntilNextRandomNoiseAssignment = Random.Range(3f, 5f);
-        userTargetsNoise = Random.Range(-1, 2); //-2 through 2, equal prob.
-        peerTargetsNoise = Random.Range(-1, 2); //-2 through 2, equal prob.
+        userTimeUntilNextRandomNoiseAssignment = Random.Range(5f, 8f);
+        peerTimeUntilNextRandomNoiseAssignment = Random.Range(5f, 8f);
+        userTargetsNoise = Random.Range(-1, 2); 
+        peerTargetsNoise = Random.Range(-1, 2);
 
         if (constantBalloonsWithNoise)
         {
-            userInterval = 0.8f;
-            peerInterval = 0.8f;
+            userInterval = 1.5f;
+            peerInterval = 1.5f;
         }
 	}
 
@@ -78,14 +78,14 @@ public class GenerateTargetsScript : MonoBehaviour {
             }
             if (randomTimeUser < 0f)
             {
-                if (!constantBalloonsWithNoise || numUserTargets < userTargetsCap + userTargetsNoise)
+                if (!constantBalloonsWithNoise || numUserTargets < (userTargetsCap + userTargetsNoise))
                 {
                     randomTimeUser = Random.Range(0.0f, userInterval);
                 }
             }
             if (randomTimePeer < 0f)
             {
-                if (!constantBalloonsWithNoise || numPeerTargets < peerTargetsCap + peerTargetsNoise)
+                if (!constantBalloonsWithNoise || numPeerTargets < (peerTargetsCap + peerTargetsNoise))
                 {
                     randomTimePeer = Random.Range(0.0f, peerInterval);
                 }
@@ -168,13 +168,13 @@ public class GenerateTargetsScript : MonoBehaviour {
             if (userTimeUntilNextRandomNoiseAssignment >= userRandomNoiseTimer)
             {
                 userTargetsNoise = Random.Range(-1, 2);
-                userTimeUntilNextRandomNoiseAssignment = Random.Range(3f, 5f);
+                userTimeUntilNextRandomNoiseAssignment = Random.Range(5f, 8f);
                 userRandomNoiseTimer = 0f;
             }
             if (peerTimeUntilNextRandomNoiseAssignment >= peerRandomNoiseTimer)
             {
                 peerTargetsNoise = Random.Range(-1, 2);
-                peerTimeUntilNextRandomNoiseAssignment = Random.Range(3f, 5f);
+                peerTimeUntilNextRandomNoiseAssignment = Random.Range(5f, 8f);
                 peerRandomNoiseTimer = 0f;
             }
         }

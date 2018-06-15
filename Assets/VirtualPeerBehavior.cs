@@ -20,6 +20,9 @@ public class VirtualPeerBehavior : MonoBehaviour {
     public static Text peerTextChangeFromOutside;
     AudioSource peerAudioSource;
 
+    public GameObject blueBalloonUIElement;
+    public GameObject redBalloonUIElement;
+
 	// Use this for initialization
 	void Start () {
         noise = Random.Range(-3, 4); //-3, -2, -1, 0, 1, 2, or 3
@@ -51,10 +54,23 @@ public class VirtualPeerBehavior : MonoBehaviour {
                         int randIndex = Random.Range(0, peerTargets.Length);
                         peerAudioSource.transform.localPosition = peerTargets[randIndex].transform.localPosition;
                         peerAudioSource.Play();
-                        Destroy(peerTargets[randIndex]);
+
+                        GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.red);
+
+                        /*
+                         GameObject pref = Instantiate(redBalloonUIElement);
+                         pref.transform.localPosition = peerTargets[randIndex].transform.localPosition;
+                         pref.transform.localPosition = Vector3.Lerp(pref.transform.localPosition, new Vector3(0, 5, 0), 0.65f);
+                         pref.transform.SetParent(GameObject.Find("Canvas").transform);
+                       */
+
+                        //Destroy(peerTargets[randIndex]);
+                        SetLayerRecursively(peerTargets[randIndex], LayerMask.NameToLayer("Ignore Raycast"));
+                        //peerTargets[randIndex].layer = LayerMask.NameToLayer("Ignore Raycast");
+                        peerTargets[randIndex].tag = "Destroying";
                         peerPoints++;
                         DataCollector.WriteEvent("Peer hit peer's target");
-                        GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.red);
+
                         GenerateTargetsScript.numPeerTargets--;
                         if (peerPoints < 10 && peerPoints > -10)
                         {
@@ -89,8 +105,13 @@ public class VirtualPeerBehavior : MonoBehaviour {
                         int randIndex = Random.Range(0, userTargets.Length);
                         peerAudioSource.transform.localPosition = userTargets[randIndex].transform.localPosition;
                         peerAudioSource.Play();
-                        Destroy(userTargets[randIndex]);
+                        //Destroy(userTargets[randIndex]);
+
+                        SetLayerRecursively(userTargets[randIndex], LayerMask.NameToLayer("Ignore Raycast"));
+                        userTargets[randIndex].tag = "Destroying";
+
                         peerPoints--;
+                        peerPoints = Mathf.Max(0, peerPoints);
                         TargetShootScript.userScore++;
                         DataCollector.WriteEvent("Peer hit user's target");
                         GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.blue);
@@ -139,7 +160,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                                 peerPointsText.text = "Peer   " + peerPoints;
                         }
                     }
-                    else
+                    else if (peerPoints > 0)
                     {
                         peerPoints--; //Missed
                         DataCollector.WriteEvent("Peer missed");
@@ -208,6 +229,25 @@ public class VirtualPeerBehavior : MonoBehaviour {
                 timeChangeRandomNoise = 0f;
                 randomNoiseScheduledChangeTime = Random.Range(3f, 5f);
             }
+        }
+    }
+
+    void SetLayerRecursively(GameObject obj, int newLayer)
+    {
+        if (null == obj)
+        {
+            return;
+        }
+
+        obj.layer = newLayer;
+
+        foreach (Transform child in obj.transform)
+        {
+            if (null == child)
+            {
+                continue;
+            }
+            SetLayerRecursively(child.gameObject, newLayer);
         }
     }
 }

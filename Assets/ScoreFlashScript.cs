@@ -16,7 +16,7 @@ public class ScoreFlashScript : MonoBehaviour {
         {
             time += 3f * Time.deltaTime;
             Color curr = gameObject.GetComponent<Image>().color;
-            gameObject.GetComponent<Image>().color = new Color(curr.r, curr.g, curr.b, (float) (-System.Math.Tanh(time - 0.25f) + 1.0));
+            gameObject.GetComponent<Image>().color = new Color(curr.r, curr.g, curr.b, (float) (-System.Math.Tanh(time - 0.75f) + 1.0));
         }
 	}
 
