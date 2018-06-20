@@ -180,4 +180,30 @@ public class TargetShootScript : MonoBehaviour {
             SetLayerRecursively(child.gameObject, newLayer);
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.transform.parent.parent.parent.tag.Equals("UserTarget") || collision.transform.parent.parent.parent.tag.Equals("PeerTarget"))
+        {
+            float distanceFromCenter = Vector3.Distance(collision.gameObject.transform.position, (transform.position - new Vector3(0, transform.localScale.y, 0)));
+            transform.localScale = new Vector3(transform.localScale.x, distanceFromCenter/4f, transform.localScale.z);
+            transform.localPosition = new Vector3(0, 0, transform.localScale.y);
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        if (collision.transform.parent.parent.parent.tag.Equals("UserTarget") || collision.transform.parent.parent.parent.tag.Equals("PeerTarget"))
+        {
+            float distanceFromCenter = Vector3.Distance(collision.gameObject.transform.position, (transform.position - new Vector3(0, transform.localScale.y, 0)));
+            transform.localScale = new Vector3(transform.localScale.x, distanceFromCenter / 4f, transform.localScale.z);
+            transform.localPosition = new Vector3(0, 0, transform.localScale.y);
+        }
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        transform.localScale = new Vector3(transform.localScale.x, 8.2f, transform.localScale.z);
+        transform.localPosition = new Vector3(0, 0, transform.localScale.y);
+    }
 }

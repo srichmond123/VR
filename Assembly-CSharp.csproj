@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\BalloonUIBehavior.cs" />
+    <Compile Include="Assets\BarGraphScript.cs" />
     <Compile Include="Assets\DataCollector.cs" />
     <Compile Include="Assets\GenerateTargetsScript.cs" />
     <Compile Include="Assets\Oculus\AudioManager\Scenes\Scripts\TestScript.cs" />

@@ -48,15 +48,15 @@ public class GenerateTargetsScript : MonoBehaviour {
 
 	void Start () {
 
-        userTimeUntilNextRandomNoiseAssignment = Random.Range(5f, 8f);
-        peerTimeUntilNextRandomNoiseAssignment = Random.Range(5f, 8f);
+        userTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
+        peerTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
         userTargetsNoise = Random.Range(-1, 2); 
         peerTargetsNoise = Random.Range(-1, 2);
 
         if (constantBalloonsWithNoise)
         {
-            userInterval = 1.5f;
-            peerInterval = 1.5f;
+            userInterval = 2.0f;
+            peerInterval = 2.0f;
         }
 	}
 
@@ -68,8 +68,11 @@ public class GenerateTargetsScript : MonoBehaviour {
             userRandomNoiseTimer += Time.deltaTime;
             peerRandomNoiseTimer += Time.deltaTime;
 
-            timeUser += Time.deltaTime;
-            timePeer += Time.deltaTime;
+            if (randomTimeUser > 0f)
+                timeUser += Time.deltaTime;
+            if (randomTimePeer > 0f)
+                timePeer += Time.deltaTime;
+
 
             if (increaseIntervalBasedOnDensityMode)
             {
@@ -165,16 +168,16 @@ public class GenerateTargetsScript : MonoBehaviour {
             }
 
             //Random noise for constant amount of balloons:
-            if (userTimeUntilNextRandomNoiseAssignment >= userRandomNoiseTimer)
+            if (userRandomNoiseTimer >= userTimeUntilNextRandomNoiseAssignment)
             {
                 userTargetsNoise = Random.Range(-1, 2);
-                userTimeUntilNextRandomNoiseAssignment = Random.Range(5f, 8f);
+                userTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
                 userRandomNoiseTimer = 0f;
             }
-            if (peerTimeUntilNextRandomNoiseAssignment >= peerRandomNoiseTimer)
+            if (peerRandomNoiseTimer >= peerTimeUntilNextRandomNoiseAssignment)
             {
                 peerTargetsNoise = Random.Range(-1, 2);
-                peerTimeUntilNextRandomNoiseAssignment = Random.Range(5f, 8f);
+                peerTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
                 peerRandomNoiseTimer = 0f;
             }
         }
