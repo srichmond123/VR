@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
+using System.Globalization;
 
 public class TargetShootScript : MonoBehaviour {
 
@@ -9,6 +11,7 @@ public class TargetShootScript : MonoBehaviour {
     public Text scoreText;
     public static Text scoreTextChangeFromOutside;
     public static bool playing = false; //On waiting screen:
+    bool colliding = false;
     private bool thisControllerInUse = false;
     AudioSource userAudioSource;
 
@@ -18,7 +21,7 @@ public class TargetShootScript : MonoBehaviour {
 	void Start () {
         scoreTextChangeFromOutside = scoreText;
         userAudioSource = GameObject.Find("User Audio Source").GetComponent<AudioSource>();
-;	}
+	}
 
     // Update is called once per frame
     void Update()
@@ -31,6 +34,11 @@ public class TargetShootScript : MonoBehaviour {
 
         if (thisControllerInUse)
         {
+            if (transform.localScale.y < 8.0f && !colliding)
+            {
+                transform.localScale = new Vector3(transform.localScale.x, 8.2f, transform.localScale.z);
+                transform.localPosition = new Vector3(0, 0, transform.localScale.y);
+            }
             if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
             {
                 RaycastHit hit;
@@ -133,7 +141,7 @@ public class TargetShootScript : MonoBehaviour {
                 }
 
             }
-
+            colliding = false;
         }
         if (!playing && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)) //Set to use right handed controller:
         {
@@ -155,7 +163,7 @@ public class TargetShootScript : MonoBehaviour {
     {
         playing = true;
         thisControllerInUse = true;
-        //DataCollector.collectingData = true;
+        DataCollector.collectingData = true;
         GameObject.Find("ControllerImage").SetActive(false);
         GameObject.Find("BeginText").SetActive(false);
         gameObject.transform.parent.GetChild(0).GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
@@ -183,6 +191,7 @@ public class TargetShootScript : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
+        colliding = true;
         if (collision.transform.parent.parent.parent.tag.Equals("UserTarget") || collision.transform.parent.parent.parent.tag.Equals("PeerTarget"))
         {
             float distanceFromCenter = Vector3.Distance(collision.gameObject.transform.position, (transform.position - new Vector3(0, transform.localScale.y, 0)));
@@ -193,6 +202,7 @@ public class TargetShootScript : MonoBehaviour {
 
     private void OnCollisionStay(Collision collision)
     {
+        colliding = true;
         if (collision.transform.parent.parent.parent.tag.Equals("UserTarget") || collision.transform.parent.parent.parent.tag.Equals("PeerTarget"))
         {
             float distanceFromCenter = Vector3.Distance(collision.gameObject.transform.position, (transform.position - new Vector3(0, transform.localScale.y, 0)));
@@ -206,4 +216,5 @@ public class TargetShootScript : MonoBehaviour {
         transform.localScale = new Vector3(transform.localScale.x, 8.2f, transform.localScale.z);
         transform.localPosition = new Vector3(0, 0, transform.localScale.y);
     }
+
 }
