@@ -12,6 +12,7 @@ public class GenerateTargetsScript : MonoBehaviour {
 	public GameObject targetPrefab;
     public GameObject virtualPeer;
     public GameObject barGraph;
+    public GameObject postGameScreen; //The "you won by X points" message
     public Text countdownText;
     public Text beginText;
     public RawImage controllerImage;
@@ -44,10 +45,14 @@ public class GenerateTargetsScript : MonoBehaviour {
     public static float userInterval = 2.0f;
     public static float peerInterval = 2.0f;
 
+    static int scoreDifference = 0;
+    public static bool inTutorial = false;
+    public static int stepOfTutorial = 0;
+
 
     List<string> modes;
     public static string currentMode = "";
-    const int GAME_TIME = 120; //2 minutes
+    const int GAME_TIME = 15; //2 minutes
     float countdownTimer = GAME_TIME;
 
 
@@ -61,7 +66,8 @@ public class GenerateTargetsScript : MonoBehaviour {
     public bool constantBalloonsWithNoise; //A constant of X + w user&peer balloons should exist on average in this mode
 
 	void Start () {
-
+        countdownText.text = "";
+        postGameScreen.SetActive(false);
         userTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
         peerTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
         userTargetsNoise = Random.Range(-1, 2); 
@@ -85,219 +91,301 @@ public class GenerateTargetsScript : MonoBehaviour {
     {
         if (TargetShootScript.playing)
         {
-            if (currentMode.Equals(""))
+            if (inTutorial)
             {
-                if (modes.Count > 0) //Picking next gameplay mode:
+                if (stepOfTutorial == 0)
                 {
-                    int index = Random.Range(0, modes.Count);
-                    currentMode = modes[index];
-                    modes.RemoveAt(index);
+                    beginText.text = "Your goal is to pop blue balloons while avoiding red ones. To ........";
+                }
+            }
+            else
+            {
+                if (currentMode.Equals(""))
+                {
+                    if (modes.Count > 0) //Picking next gameplay mode:
+                    {
+                        if (modes.Count != 4)
+                        {
+                            int index = Random.Range(0, modes.Count);
+                            currentMode = modes[index];
+                            modes.RemoveAt(index);
+                        }
+                        else
+                        {
+                            currentMode = modes[0];
+                            modes.RemoveAt(0); //Make Alone first mode
+                        }
 
-                    foreach (GameObject g in GameObject.FindGameObjectsWithTag("PeerTarget"))
-                    {
-                        Destroy(g);
-                    }
-                    foreach (GameObject g in GameObject.FindGameObjectsWithTag("UserTarget"))
-                    {
-                        Destroy(g);
-                    }
+                        foreach (GameObject g in GameObject.FindGameObjectsWithTag("PeerTarget"))
+                        {
+                            Destroy(g);
+                        }
+                        foreach (GameObject g in GameObject.FindGameObjectsWithTag("UserTarget"))
+                        {
+                            Destroy(g);
+                        }
 
-                    if (currentMode.Equals("Alone"))
-                    {
-                        TargetShootScript.scoreTextChangeFromOutside.transform.localPosition += new Vector3(0f, -0.0298f, 0f);
-                        VirtualPeerBehavior.peerTextChangeFromOutside.enabled = false;
-                        virtualPeer.GetComponent<VirtualPeerBehavior>().enabled = false;
-                        barGraph.GetComponent<BarGraphScript>().enabled = false;
-                        barGraph.GetComponent<Image>().enabled = true; //So it's not stuck on some score
-                    }
-                    else if (currentMode.Equals("Equally perform"))
-                    {
                         resetElementsOnModeChange();
-                        virtualPeer.GetComponent<VirtualPeerBehavior>().performanceConstant = 0;
-                    }
-                    else if (currentMode.Equals("Underperform"))
-                    {
-                        resetElementsOnModeChange();
-                        virtualPeer.GetComponent<VirtualPeerBehavior>().performanceConstant = -2;
+
+                        if (currentMode.Equals("Alone"))
+                        {
+                            TargetShootScript.scoreTextChangeFromOutside.transform.localPosition += new Vector3(0f, -0.0298f, 0f);
+                            VirtualPeerBehavior.peerTextChangeFromOutside.enabled = false;
+                            virtualPeer.GetComponent<VirtualPeerBehavior>().enabled = false;
+                            barGraph.GetComponent<BarGraphScript>().enabled = false;
+                            barGraph.GetComponent<Image>().enabled = true; //So it's not stuck on some score
+                        }
+                        else if (currentMode.Equals("Equally perform"))
+                        {
+                            virtualPeer.GetComponent<VirtualPeerBehavior>().performanceConstant = 0;
+                        }
+                        else if (currentMode.Equals("Underperform"))
+                        {
+                            virtualPeer.GetComponent<VirtualPeerBehavior>().performanceConstant = -2;
+                        }
+                        else
+                        {
+                            virtualPeer.GetComponent<VirtualPeerBehavior>().performanceConstant = 2;
+                        }
+                        if (modes.Count < 3) //If this isn't the first mode change, then have a waiting screen:
+                        {
+                            waiting = true;
+                            controllerImage.gameObject.SetActive(true);
+                            postGameScreen.SetActive(true);
+
+                            string plural = (Mathf.Abs(scoreDifference) > 1 || scoreDifference == 0) ? " points" : " point";
+                            if (modes.Count != 2) //If they didn't just play alone
+                            {
+                                
+                                if (scoreDifference > 0) //User won
+                                    postGameScreen.GetComponentInChildren<Text>().text = "You won by " + scoreDifference + plural;
+                                else if (scoreDifference < 0) //Peer won
+                                    postGameScreen.GetComponentInChildren<Text>().text = "Your peer won by " + Mathf.Abs(scoreDifference) + plural;
+                                else //Tie
+                                    postGameScreen.GetComponentInChildren<Text>().text = "You tied with your peer";
+                            }
+                            else
+                            {
+                                postGameScreen.GetComponentInChildren<Text>().text = "You scored " + scoreDifference + plural;
+                            }
+
+                            beginText.gameObject.SetActive(true);
+                            if (modes.Count == 2) //If the player just came from the playing alone screen, they need a unique message:
+                            {
+                                beginText.text = "You will now compete against a peer.\n\nPress this button to continue";
+                                beginText.color = Color.white;
+                                beginText.transform.localPosition =
+                                    new Vector3(-33.862f, -195.875f, 13.73f);
+                                controllerImage.transform.localPosition =
+                                    new Vector3(-34.322f, controllerImage.transform.localPosition.y, controllerImage.transform.localPosition.z);
+                                beginText.fontSize = beginText.fontSize - 15;
+                            }
+                            else {
+                                beginText.color = Color.white;
+                                beginText.text = "Press this button to continue";
+                            }
+                        }
                     }
                     else
                     {
-                        resetElementsOnModeChange();
-                        virtualPeer.GetComponent<VirtualPeerBehavior>().performanceConstant = 2;
-                    }
-                    if (modes.Count < 3) //If this isn't the first mode change, then have a waiting screen:
-                    {
                         waiting = true;
-                        controllerImage.gameObject.SetActive(true);
                         beginText.gameObject.SetActive(true);
-                        beginText.text = "Press this button to continue";
+                        postGameScreen.SetActive(true);
+                        barGraph.GetComponent<Image>().enabled = false;
+                        beginText.text = "Game is over";
+                        DataCollector.collectingData = false;
+                        string plural = (Mathf.Abs(scoreDifference) > 1 || scoreDifference == 0) ? " points" : " point";
+
+                        if (scoreDifference > 0) //User won
+                            postGameScreen.GetComponentInChildren<Text>().text = "You won by " + scoreDifference + plural;
+                        else if (scoreDifference < 0) //Peer won
+                            postGameScreen.GetComponentInChildren<Text>().text = "Your peer won by " + Mathf.Abs(scoreDifference) + plural;
+                        else //Tie
+                            postGameScreen.GetComponentInChildren<Text>().text = "You tied with your peer";
                     }
                 }
-                else
+                if (waiting)
                 {
-                    waiting = true;
-                    beginText.gameObject.SetActive(true);
-                    beginText.text = "Game is over";
-                }
-            }
-            if (waiting)
-            {
-                waitingTime += Time.deltaTime;
-                if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)))
-                {
-                    if (waitingTime >= 1.0f && !beginText.text.Equals("Game is over"))
+                    waitingTime += Time.deltaTime;
+                    if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)))
                     {
-                        waiting = false;
-                        controllerImage.gameObject.SetActive(false);
-                        beginText.gameObject.SetActive(false);
-                        waitingTime = 0f;
+                        if (waitingTime >= 1.5f && !beginText.text.Equals("Game is over"))
+                        {
+                            waiting = false;
+                            controllerImage.gameObject.SetActive(false);
+                            postGameScreen.SetActive(false);
+                            beginText.gameObject.SetActive(false);
+                            waitingTime = 0f;
+                        }
                     }
-                }
-            }
-            
-
-            if (!waiting)
-            {
-                userRandomNoiseTimer += Time.deltaTime;
-                peerRandomNoiseTimer += Time.deltaTime;
-
-                if (randomTimeUser > 0f)
-                    timeUser += Time.deltaTime;
-                if (randomTimePeer > 0f)
-                    timePeer += Time.deltaTime;
-
-
-                if (increaseIntervalBasedOnDensityMode)
-                {
-                    userInterval = 2f + (0.5f * numUserTargets);
-                    peerInterval = 2f + (0.5f * numPeerTargets);
-                }
-                if (randomTimeUser < 0f)
-                {
-                    if (!constantBalloonsWithNoise || numUserTargets < (userTargetsCap + userTargetsNoise))
+                    if (beginText.text.Equals("Game is over"))
                     {
-                        randomTimeUser = Random.Range(0.0f, userInterval);
+                        if (numUserTargets > 0 || numPeerTargets > 0)
+                        {
+                            numUserTargets = 0;
+                            numPeerTargets = 0;
+                            foreach (GameObject g in GameObject.FindGameObjectsWithTag("PeerTarget"))
+                            {
+                                Destroy(g);
+                            }
+                            foreach (GameObject g in GameObject.FindGameObjectsWithTag("UserTarget"))
+                            {
+                                Destroy(g);
+                            }
+                        }
                     }
                 }
-                if (randomTimePeer < 0f)
+
+
+                if (!waiting)
                 {
-                    if (!constantBalloonsWithNoise || numPeerTargets < (peerTargetsCap + peerTargetsNoise))
+                    userRandomNoiseTimer += Time.deltaTime;
+                    peerRandomNoiseTimer += Time.deltaTime;
+
+                    if (randomTimeUser > 0f)
+                        timeUser += Time.deltaTime;
+                    if (randomTimePeer > 0f)
+                        timePeer += Time.deltaTime;
+
+
+                    if (increaseIntervalBasedOnDensityMode)
                     {
-                        randomTimePeer = Random.Range(0.0f, peerInterval);
+                        userInterval = 2f + (0.5f * numUserTargets);
+                        peerInterval = 2f + (0.5f * numPeerTargets);
                     }
-                }
-                if (!generatedTargetForUser)
-                {
-                    if (timeUser >= randomTimeUser && randomTimeUser > 0f)
+                    if (randomTimeUser < 0f)
                     {
-                        float radius = TargetMovementScript.radius;
-
-                        //Now, uniformly choose random point on sphere, excluding bottom around feet:
-
-                        float thetaRealPlayer = Random.Range(0f, 2f * Mathf.PI);
-
-                        float phiRealPlayer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
-
-                        GameObject targetPrefReal = Instantiate(targetPrefab) as GameObject;
-                        targetPrefReal.transform.localPosition
-                        = new Vector3(radius * Mathf.Sin(phiRealPlayer) * Mathf.Cos(thetaRealPlayer), radius * Mathf.Cos(phiRealPlayer) + 5, radius * Mathf.Sin(phiRealPlayer) * Mathf.Sin(thetaRealPlayer));
-                        targetPrefReal.transform.LookAt(new Vector3(0, 5, 0));
-                        targetPrefReal.transform.GetChild(0).GetChild(0).LookAt(new Vector3(0, 100000, 0));
-                        targetPrefReal.transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material1;
-                        targetPrefReal.tag = "UserTarget";
-                        targetPrefReal.GetComponent<TargetMovementScript>().theta = thetaRealPlayer;
-                        targetPrefReal.GetComponent<TargetMovementScript>().phi = phiRealPlayer;
-                        numUserTargets++;
-
-                        generatedTargetForUser = true;
-                        //targetIndex++;
+                        if (!constantBalloonsWithNoise || numUserTargets < (userTargetsCap + userTargetsNoise))
+                        {
+                            randomTimeUser = Random.Range(0.0f, userInterval);
+                        }
                     }
-                }
-                if (!generatedTargetForPeer && virtualPeer.GetComponent<VirtualPeerBehavior>().enabled)
-                {
-                    if (timePeer >= randomTimePeer && randomTimePeer > 0f)
+                    if (randomTimePeer < 0f)
                     {
-                        float radius = TargetMovementScript.radius;
-
-                        //Now, uniformly choose random point on sphere, excluding bottom around feet:
-
-                        float thetaVirtualPeer = Random.Range(0f, 2f * Mathf.PI);
-
-                        float phiVirtualPeer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
-
-                        GameObject targetPrefVirtual = Instantiate(targetPrefab) as GameObject;
-                        targetPrefVirtual.transform.localPosition
-                        = new Vector3(radius * Mathf.Sin(phiVirtualPeer) * Mathf.Cos(thetaVirtualPeer), radius * Mathf.Cos(phiVirtualPeer) + 5, radius * Mathf.Sin(phiVirtualPeer) * Mathf.Sin(thetaVirtualPeer));
-                        targetPrefVirtual.transform.LookAt(new Vector3(0, 5, 0));
-                        targetPrefVirtual.transform.GetChild(0).GetChild(0).LookAt(new Vector3(0, 100000, 0));
-                        targetPrefVirtual.transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material2;
-                        targetPrefVirtual.tag = "PeerTarget";
-                        targetPrefVirtual.GetComponent<TargetMovementScript>().theta = thetaVirtualPeer;
-                        targetPrefVirtual.GetComponent<TargetMovementScript>().phi = phiVirtualPeer;
-                        numPeerTargets++;
-
-
-                        generatedTargetForPeer = true;
-                        //targetIndex++;
+                        if (!constantBalloonsWithNoise || numPeerTargets < (peerTargetsCap + peerTargetsNoise))
+                        {
+                            randomTimePeer = Random.Range(0.0f, peerInterval);
+                        }
                     }
-                }
-                if (generatedTargetForUser)
-                {
-                    if (timeUser >= userInterval || constantBalloonsWithNoise) //With constant balloons mode, it wouldn't be about intervals so much as getting balloons in the game
+                    if (!generatedTargetForUser)
                     {
-                        timeUser = 0f;
-                        generatedTargetForUser = false;
-                        randomTimeUser = -1f;
+                        if (timeUser >= randomTimeUser && randomTimeUser > 0f)
+                        {
+                            float radius = TargetMovementScript.radius;
+
+                            //Now, uniformly choose random point on sphere, excluding bottom around feet:
+
+                            float thetaRealPlayer = Random.Range(0f, 2f * Mathf.PI);
+
+                            float phiRealPlayer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
+
+                            GameObject targetPrefReal = Instantiate(targetPrefab) as GameObject;
+                            targetPrefReal.transform.localPosition
+                            = new Vector3(radius * Mathf.Sin(phiRealPlayer) * Mathf.Cos(thetaRealPlayer), radius * Mathf.Cos(phiRealPlayer) + 5, radius * Mathf.Sin(phiRealPlayer) * Mathf.Sin(thetaRealPlayer));
+                            targetPrefReal.transform.LookAt(new Vector3(0, 5, 0));
+                            targetPrefReal.transform.GetChild(0).GetChild(0).LookAt(new Vector3(0, 100000, 0));
+                            targetPrefReal.transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material1;
+                            targetPrefReal.tag = "UserTarget";
+                            targetPrefReal.GetComponent<TargetMovementScript>().theta = thetaRealPlayer;
+                            targetPrefReal.GetComponent<TargetMovementScript>().phi = phiRealPlayer;
+                            numUserTargets++;
+
+                            generatedTargetForUser = true;
+                            //targetIndex++;
+                        }
                     }
-                }
-                if (generatedTargetForPeer)
-                {
-                    if (timePeer >= peerInterval || constantBalloonsWithNoise)
+                    if (!generatedTargetForPeer && virtualPeer.GetComponent<VirtualPeerBehavior>().enabled)
                     {
-                        timePeer = 0f;
-                        generatedTargetForPeer = false;
-                        randomTimePeer = -1f;
+                        if (timePeer >= randomTimePeer && randomTimePeer > 0f)
+                        {
+                            float radius = TargetMovementScript.radius;
+
+                            //Now, uniformly choose random point on sphere, excluding bottom around feet:
+
+                            float thetaVirtualPeer = Random.Range(0f, 2f * Mathf.PI);
+
+                            float phiVirtualPeer = Mathf.Acos(2f * Random.Range(0.146f, 1f) - 1f);
+
+                            GameObject targetPrefVirtual = Instantiate(targetPrefab) as GameObject;
+                            targetPrefVirtual.transform.localPosition
+                            = new Vector3(radius * Mathf.Sin(phiVirtualPeer) * Mathf.Cos(thetaVirtualPeer), radius * Mathf.Cos(phiVirtualPeer) + 5, radius * Mathf.Sin(phiVirtualPeer) * Mathf.Sin(thetaVirtualPeer));
+                            targetPrefVirtual.transform.LookAt(new Vector3(0, 5, 0));
+                            targetPrefVirtual.transform.GetChild(0).GetChild(0).LookAt(new Vector3(0, 100000, 0));
+                            targetPrefVirtual.transform.GetChild(0).GetChild(0).gameObject.GetComponent<MeshRenderer>().material = material2;
+                            targetPrefVirtual.tag = "PeerTarget";
+                            targetPrefVirtual.GetComponent<TargetMovementScript>().theta = thetaVirtualPeer;
+                            targetPrefVirtual.GetComponent<TargetMovementScript>().phi = phiVirtualPeer;
+                            numPeerTargets++;
+
+
+                            generatedTargetForPeer = true;
+                            //targetIndex++;
+                        }
                     }
-                }
-
-                //Random noise for constant amount of balloons:
-                if (userRandomNoiseTimer >= userTimeUntilNextRandomNoiseAssignment)
-                {
-                    userTargetsNoise = Random.Range(-1, 2);
-                    userTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
-                    userRandomNoiseTimer = 0f;
-                }
-                if (peerRandomNoiseTimer >= peerTimeUntilNextRandomNoiseAssignment)
-                {
-                    peerTargetsNoise = Random.Range(-1, 2);
-                    peerTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
-                    peerRandomNoiseTimer = 0f;
-                }
-
-
-
-                countdownTimer -= Time.deltaTime;
-                if (countdownTimer <= 0f)
-                {
-                    currentMode = "";
-                    TargetShootScript.userScore = 0;
-                    TargetShootScript.scoreTextChangeFromOutside.text = "You       0";
-                    if (VirtualPeerBehavior.peerPoints != 0)
+                    if (generatedTargetForUser)
                     {
-                        VirtualPeerBehavior.peerPoints = 0;
-                        VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer      0";
+                        if (timeUser >= userInterval || constantBalloonsWithNoise) //With constant balloons mode, it wouldn't be about intervals so much as getting balloons in the game
+                        {
+                            timeUser = 0f;
+                            generatedTargetForUser = false;
+                            randomTimeUser = -1f;
+                        }
                     }
-                    numUserTargets = 0;
-                    numPeerTargets = 0;
-                    countdownTimer = GAME_TIME;
-                }
-                if (countdownTimer < 10f)
-                {
-                    countdownText.text = Mathf.FloorToInt(countdownTimer + 1f).ToString();
-                }
-                else
-                {
-                    countdownText.text = "";
+                    if (generatedTargetForPeer)
+                    {
+                        if (timePeer >= peerInterval || constantBalloonsWithNoise)
+                        {
+                            timePeer = 0f;
+                            generatedTargetForPeer = false;
+                            randomTimePeer = -1f;
+                        }
+                    }
+
+                    //Random noise for constant amount of balloons:
+                    if (userRandomNoiseTimer >= userTimeUntilNextRandomNoiseAssignment)
+                    {
+                        userTargetsNoise = Random.Range(-1, 2);
+                        userTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
+                        userRandomNoiseTimer = 0f;
+                    }
+                    if (peerRandomNoiseTimer >= peerTimeUntilNextRandomNoiseAssignment)
+                    {
+                        peerTargetsNoise = Random.Range(-1, 2);
+                        peerTimeUntilNextRandomNoiseAssignment = Random.Range(7f, 12f);
+                        peerRandomNoiseTimer = 0f;
+                    }
+
+
+
+                    countdownTimer -= Time.deltaTime;
+                    if (countdownTimer <= 0f)
+                    {
+                        currentMode = "";
+                        scoreDifference = TargetShootScript.userScore - VirtualPeerBehavior.peerPoints;
+                        TargetShootScript.userScore = 0;
+                        TargetShootScript.scoreTextChangeFromOutside.text = "You       0";
+                        if (VirtualPeerBehavior.peerPoints != 0)
+                        {
+                            VirtualPeerBehavior.peerPoints = 0;
+                            VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer      0";
+                        }
+                        numUserTargets = 0;
+                        numPeerTargets = 0;
+                        countdownTimer = GAME_TIME;
+                    }
+                    if (countdownTimer < 10f)
+                    {
+                        string newText = Mathf.FloorToInt(countdownTimer + 1f).ToString();
+                        if (!countdownText.text.Equals(newText))
+                        {
+                            countdownText.gameObject.GetComponent<CountdownTimerScript>().flash();
+                        }
+                        countdownText.text = newText;
+                    }
+                    else
+                    {
+                        countdownText.text = "";
+                    }
                 }
             }
         }

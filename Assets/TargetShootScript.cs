@@ -143,16 +143,16 @@ public class TargetShootScript : MonoBehaviour {
             }
             colliding = false;
         }
-        if (!playing && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)) //Set to use right handed controller:
+        if (!playing && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
         {
-            if (gameObject.tag.Equals("RightHandLaser")) //Meaning we're in the right hand script and the user pressed their right hand:
+            if (gameObject.tag.Equals("LeftHandLaser"))
             {
                 initializeController();
             }
         }
-        if (!playing && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
+        if (!playing && OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch)) //Set to use right handed controller:
         {
-            if (gameObject.tag.Equals("LeftHandLaser"))
+            if (gameObject.tag.Equals("RightHandLaser")) //Meaning we're in the right hand script and the user pressed their right hand:
             {
                 initializeController();
             }

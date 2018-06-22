@@ -98,9 +98,9 @@ public class VirtualPeerBehavior : MonoBehaviour {
                 else
                 {
                     //Either miss (3/4 chance) or hit user's target (1/4 chance):
-                    int randomNum = Random.Range(0, 8);
+                    int randomNum = Random.Range(0, 10);
                     GameObject[] userTargets = GameObject.FindGameObjectsWithTag("UserTarget");
-                    if (randomNum == 7 && userTargets.Length != 0)
+                    if (randomNum == 9 && userTargets.Length != 0)
                     {
                         int randIndex = Random.Range(0, userTargets.Length);
                         peerAudioSource.transform.localPosition = userTargets[randIndex].transform.localPosition;

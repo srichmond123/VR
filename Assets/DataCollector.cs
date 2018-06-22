@@ -15,7 +15,7 @@ public class DataCollector : MonoBehaviour {
     static GameObject ctrCamera;
     static GameObject handAnchor;
     static int userID;
-    static float time;
+    static float time = 0f;
     public bool makeUserPath;
     public static bool collectingData = false;
 
@@ -50,12 +50,12 @@ public class DataCollector : MonoBehaviour {
             modePath = userPath + "Equally Performing Peer/";
             Directory.CreateDirectory(modePath);
         }
-
+        
     }
 	
 	// Update is called once per frame
 	void Update () {
-        if (collectingData && !GenerateTargetsScript.waiting)
+        if (collectingData && !GenerateTargetsScript.waiting && getModePath() != null)
         {
             if (handAnchor == null)
             {
@@ -74,7 +74,7 @@ public class DataCollector : MonoBehaviour {
 
             if (writtenMovementDataColumnNames)
             {
-                if (!oldModePathMovementData.Equals(getModePath()) && getModePath() != null)
+                if (!oldModePathMovementData.Equals(getModePath()))
                 {
                     writtenMovementDataColumnNames = false;
                 }
@@ -93,44 +93,38 @@ public class DataCollector : MonoBehaviour {
                 if (handAnchor.transform.GetChild(1).tag.Equals("RightHandLaser"))
                     handStr = "Right";
 
-                streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (s):,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
+                streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
                     handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:," 
                     + handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:\n");
                 streamWriter.Close();
             }
-
-            time += Time.deltaTime;
             path = userPath + getModePath() + "MovementData.csv";
 
-            if (getModePath() != null)
-            {
+            new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
+            streamWriter = new StreamWriter(path, true, Encoding.ASCII);
 
-                new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
-                streamWriter = new StreamWriter(path, true, Encoding.ASCII);
-
-                string line = DateTime.Now.ToString("yyyy/MM/dd - hh:mm:ss.ffffff") + ","
-                    + time.ToString() + ","
-                    + ctrCamera.transform.localPosition.x.ToString() + ","
-                    + ctrCamera.transform.localPosition.y.ToString() + ","
-                    + ctrCamera.transform.localPosition.z.ToString() + ","
-                    + ctrCamera.transform.localEulerAngles.x.ToString() + ","
-                    + ctrCamera.transform.localEulerAngles.y.ToString() + ","
-                    + ctrCamera.transform.localEulerAngles.z.ToString() + ","
-                    + handAnchor.transform.localPosition.x.ToString() + ","
-                    + handAnchor.transform.localPosition.y.ToString() + ","
-                    + handAnchor.transform.localPosition.z.ToString() + ","
-                    + handAnchor.transform.localEulerAngles.x.ToString() + ","
-                    + handAnchor.transform.localEulerAngles.y.ToString() + ","
-                    + handAnchor.transform.localEulerAngles.z.ToString() + "\n";
-                streamWriter.Write(line);
-                streamWriter.Close();
-            }
+            string line = DateTime.Now.ToString("yyyy/MM/dd - hh:mm:ss.fffffff") + ","
+                + time.ToString() + ","
+                + ctrCamera.transform.localPosition.x.ToString() + ","
+                + ctrCamera.transform.localPosition.y.ToString() + ","
+                + ctrCamera.transform.localPosition.z.ToString() + ","
+                + ctrCamera.transform.localEulerAngles.x.ToString() + ","
+                + ctrCamera.transform.localEulerAngles.y.ToString() + ","
+                + ctrCamera.transform.localEulerAngles.z.ToString() + ","
+                + handAnchor.transform.localPosition.x.ToString() + ","
+                + handAnchor.transform.localPosition.y.ToString() + ","
+                + handAnchor.transform.localPosition.z.ToString() + ","
+                + handAnchor.transform.localEulerAngles.x.ToString() + ","
+                + handAnchor.transform.localEulerAngles.y.ToString() + ","
+                + handAnchor.transform.localEulerAngles.z.ToString() + "\n";
+            streamWriter.Write(line);
+            streamWriter.Close();
+            time += Time.deltaTime;
         }
     }
 
     public static void WriteEvent(string a) {
         if (collectingData) {
-
             string path;
             StreamWriter streamWriter;
 
@@ -153,7 +147,7 @@ public class DataCollector : MonoBehaviour {
                 string handStr = "Left";
                 if (handAnchor.transform.GetChild(1).tag.Equals("RightHandLaser"))
                     handStr = "Right";
-                streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
+                streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
                     handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:,"
                     + handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:\n");
                 streamWriter.Close();
@@ -167,7 +161,7 @@ public class DataCollector : MonoBehaviour {
             new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
             streamWriter = new StreamWriter(path, true, Encoding.ASCII);
 
-            string line = DateTime.Now.ToString("yyyy/MM/dd - hh:mm:ss.ffffff") + ","
+            string line = DateTime.Now.ToString("yyyy/MM/dd - hh:mm:ss.fffffff") + ","
                 + time.ToString() + ","
                 + userPoints.ToString() + ","
                 + peerPoints.ToString() + ","
