@@ -1,2 +1,4 @@
 Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:,Right Hand Position x:,Right Hand Position y:,Right Hand Position z:,Right Hand rotation x:,Right Hand rotation y:,Right Hand rotation z:
-2018/06/22 - 01:27:58.7814927,1.319938,0,0,User missed,0.1159127,0.2579173,-0.4506484,30.24302,326.7004,44.55937,0.1891732,-0.05854684,-0.1166959,346.4487,322.1599,359.7049
+2018/06/25 - 04:58:44.2775477,1.400186,1,0,User hit user's target,0.9466349,0.3300391,0.1609786,338.041,225.8496,353.2777,0.718181,0.1617427,-0.04059464,335.1642,223.9464,354.2678
+2018/06/25 - 04:58:47.0656763,4.18905,0,0,User missed,1.02917,0.3407192,0.1087517,331.5275,220.2525,4.901584,0.8469792,0.2692013,-0.08972828,317.6482,210.7118,2.685355
+2018/06/25 - 04:58:47.4887108,4.611376,1,0,User hit user's target,1.059344,0.3429603,0.1515526,326.0761,196.8399,9.495493,0.9874051,0.2893069,-0.06888542,320.5202,172.1318,16.51064

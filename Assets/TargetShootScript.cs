@@ -14,6 +14,8 @@ public class TargetShootScript : MonoBehaviour {
     bool colliding = false;
     private bool thisControllerInUse = false;
     AudioSource userAudioSource;
+    float timeLitUp = -1f;
+    float time = 0f;
 
     public GameObject blueBalloonUIElement;
     public GameObject redBalloonUIElement;
@@ -29,11 +31,19 @@ public class TargetShootScript : MonoBehaviour {
         if (!playing)
         {
             GetComponent<MeshRenderer>().enabled = false;
-            gameObject.transform.parent.GetChild(0).GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
+            gameObject.transform.parent.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().enabled = false;
         }
+
 
         if (thisControllerInUse)
         {
+            time += Time.deltaTime;
+            if (timeLitUp > -1f && time > timeLitUp)
+            {
+                timeLitUp = -1f;
+                GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.red);
+            }
+
             if (transform.localScale.y < 8.0f && !colliding)
             {
                 transform.localScale = new Vector3(transform.localScale.x, 8.2f, transform.localScale.z);
@@ -42,6 +52,9 @@ public class TargetShootScript : MonoBehaviour {
             if (OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch))
             {
                 RaycastHit hit;
+                GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.green);
+                timeLitUp = 0.1f;
+                time = 0f;
 
                 if (Physics.Raycast(transform.parent.position, transform.parent.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
                 {
@@ -53,6 +66,7 @@ public class TargetShootScript : MonoBehaviour {
                         GenerateTargetsScript.numUserTargets--;
                         GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.blue);
 
+
                         /*
                         GameObject pref = Instantiate(blueBalloonUIElement);
                         pref.transform.localPosition = hit.transform.parent.transform.localPosition;
@@ -61,6 +75,7 @@ public class TargetShootScript : MonoBehaviour {
                         */
                         userAudioSource.transform.localPosition = hit.transform.parent.parent.parent.localPosition;
                         userAudioSource.Play();
+
                         //Destroy(hit.transform.parent.gameObject);
                         SetLayerRecursively(hit.transform.parent.parent.parent.gameObject, LayerMask.NameToLayer("Ignore Raycast"));
                         hit.transform.parent.parent.parent.tag = "Destroying";
@@ -110,7 +125,7 @@ public class TargetShootScript : MonoBehaviour {
 
                     }
                 }
-                else
+                else if (!GenerateTargetsScript.inTutorial)
                 {
                     userScore--;
                     userScore = Mathf.Max(0, userScore);
@@ -163,10 +178,9 @@ public class TargetShootScript : MonoBehaviour {
     {
         playing = true;
         thisControllerInUse = true;
-        DataCollector.collectingData = true;
         GameObject.Find("ControllerImage").SetActive(false);
         GameObject.Find("BeginText").SetActive(false);
-        gameObject.transform.parent.GetChild(0).GetChild(0).GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
+        gameObject.transform.parent.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().enabled = true;
         GetComponent<MeshRenderer>().enabled = true;
     }
 

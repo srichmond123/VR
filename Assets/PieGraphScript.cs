@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class PieGraphScript : MonoBehaviour {
 
-    Image redImage;
-    Image blueImage;
+    public Image redImage;
+    public Image blueImage;
 	// Use this for initialization
 	void Start () {
         redImage = transform.GetChild(0).GetComponent<Image>();

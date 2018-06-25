@@ -45,6 +45,7 @@ public class TargetMovementScript : MonoBehaviour {
 	void Start () {
         
 		float random = Random.Range (0.0f, Mathf.PI * 2.0f);
+        relativeDirectionAngle = random;
 		if (transform.localPosition.y < 2.4f) {
 			relativeDirectionAngle /= 2.0f;
 		}
@@ -123,7 +124,7 @@ public class TargetMovementScript : MonoBehaviour {
 
             if (frameCount % 10 == 0)
             {
-                float randomGaussianRadius = RandomFromStandardNormalDistribution() * 3.0f; //Constant can change
+                float randomGaussianRadius = RandomFromStandardNormalDistribution() * 3.5f; //Constant can change
 
                 if (distanceFromCenter > radius + randomGaussianRadius)
                 {
@@ -135,7 +136,7 @@ public class TargetMovementScript : MonoBehaviour {
                 }
             }
 
-            //Gradually change angle at t to intended angle at t+deltat:
+            //Gradually change angle at t to intended angle at t+E*dt:
             relativeDirectionAngle += step;
 
 
@@ -301,7 +302,6 @@ public class TargetMovementScript : MonoBehaviour {
             s = (u * u) + (v * v);
         } while (!(s != 0 && s < 1)); // keep going until s is nonzero and less than one
 
-        // TODO allow a user to specify how many random numbers they want!
         // choose between u and v for seed (z0 vs z1)
         float seed;
         if (Random.Range(0, 2) == 0)
@@ -331,7 +331,7 @@ public class TargetMovementScript : MonoBehaviour {
         // Shift mean to requested mean:
         random_normal_num += mean;
 
-        // now you have a number selected from a normal distribution with requested mean and sigma!
+        // now you have a number selected from a normal distribution with requested mean and sigma
         return random_normal_num;
 
     }

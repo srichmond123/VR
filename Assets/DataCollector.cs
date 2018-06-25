@@ -90,7 +90,7 @@ public class DataCollector : MonoBehaviour {
                 new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
                 streamWriter = new StreamWriter(path, true, Encoding.ASCII);
                 string handStr = "Left";
-                if (handAnchor.transform.GetChild(1).tag.Equals("RightHandLaser"))
+                if (handAnchor.name.Equals("RightHandAnchor"))
                     handStr = "Right";
 
                 streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
@@ -124,7 +124,7 @@ public class DataCollector : MonoBehaviour {
     }
 
     public static void WriteEvent(string a) {
-        if (collectingData) {
+        if (collectingData && getModePath() != null) {
             string path;
             StreamWriter streamWriter;
 
@@ -145,7 +145,7 @@ public class DataCollector : MonoBehaviour {
                 new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
                 streamWriter = new StreamWriter(path, true, Encoding.ASCII);
                 string handStr = "Left";
-                if (handAnchor.transform.GetChild(1).tag.Equals("RightHandLaser"))
+                if (handAnchor.name.Equals("RightHandAnchor"))
                     handStr = "Right";
                 streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
                     handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:,"

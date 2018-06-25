@@ -35,7 +35,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        if (TargetShootScript.playing)
+        if (TargetShootScript.playing && !GenerateTargetsScript.inTutorial)
         {
 
             gameTime += Time.deltaTime;
