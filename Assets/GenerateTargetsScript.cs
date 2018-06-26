@@ -12,6 +12,7 @@ public class GenerateTargetsScript : MonoBehaviour {
 	public GameObject targetPrefab;
     public GameObject virtualPeer;
     public GameObject barGraph;
+    public GameObject loadingScreen;
     public GameObject pieChart;
     public GameObject postGameScreen; //The "you won by X points" message
     public GameObject[] scoreBoardElements; //for convenience, during the tutorial this will be moved out of the way.
@@ -35,6 +36,7 @@ public class GenerateTargetsScript : MonoBehaviour {
     public Material material2;
     float totalTime = 0f;
     float waitingTime = 0f;
+    bool deletedAllTargets = false;
 
     public static bool waiting = false;
     public static int numUserTargets = 0;
@@ -50,16 +52,19 @@ public class GenerateTargetsScript : MonoBehaviour {
     static int scoreDifference = 0;
     public static bool inTutorial = true;
     public static int stepOfTutorial = 0;
+    static bool startedWaitingForPeer = false;
 
+    float setWaitingTime = 0f;
 
     List<string> modes;
     public static string currentMode = "";
-    const int GAME_TIME = 120; //2 minutes
+    const int GAME_TIME = 15; //2 minutes
     float countdownTimer = GAME_TIME;
 
-    float timeSpentOnTutorialStep = 0f; 
+    float timeSpentOnTutorialStep = 0f;
 
 
+    Vector3 countdownTimerPosition;
 
     ////////////
     //Toggle these to change how targets are generated, only make 1 true:
@@ -108,6 +113,8 @@ public class GenerateTargetsScript : MonoBehaviour {
                 new Vector3(pieChart.transform.localPosition.x, pieChart.transform.localPosition.y + 100f, pieChart.transform.localPosition.z);
         }
         /////////////////
+
+        countdownTimerPosition = countdownText.gameObject.transform.localPosition;
     }
 
     // Update is called once per frame
@@ -376,7 +383,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                         string newText = Mathf.FloorToInt(11f - timeSpentOnTutorialStep).ToString();
                         if (!newText.Equals(countdownText.text))
                         {
-                            countdownText.gameObject.GetComponent<CountdownTimerScript>().flash();
+                            countdownText.gameObject.GetComponent<CountdownTimerScript>().flash(true);
                         }
                         countdownText.text = newText;
                     }
@@ -508,8 +515,13 @@ public class GenerateTargetsScript : MonoBehaviour {
                                 beginText.fontSize = 35;
                             }
                             else {
+                                controllerImage.gameObject.SetActive(false);
+                                //controllerImage.transform.localPosition =
+                                //    new Vector3(-34.248f, -195.8729f, 13.73f);
                                 beginText.color = Color.white;
-                                beginText.text = "Press this button to continue";
+                                beginText.text = "Next game starts in: ";
+                                countdownText.gameObject.transform.localPosition =
+                                    new Vector3(-33.628f, -195.8939f, 13.73f);
                             }
                         }
                     }
@@ -520,6 +532,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                         postGameScreen.SetActive(true);
                         barGraph.GetComponent<Image>().enabled = false;
                         beginText.text = "Game is over";
+                        virtualPeer.GetComponent<VirtualPeerBehavior>().enabled = false;
                         DataCollector.collectingData = false;
                         string plural = (Mathf.Abs(scoreDifference) > 1 || scoreDifference == 0) ? " points" : " point";
 
@@ -542,11 +555,28 @@ public class GenerateTargetsScript : MonoBehaviour {
                         }
                     }
                     waitingTime += Time.deltaTime;
-                    if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)))
+
+                    if (modes.Count != 2 && !beginText.text.Equals("Game is over"))
                     {
-                        if (waitingTime >= 1.5f && !beginText.text.Equals("Game is over"))
+                        string newText = Mathf.FloorToInt(11f - waitingTime).ToString();
+                        if (!newText.Equals(countdownText.text))
                         {
-                            waiting = false;
+                            countdownText.gameObject.GetComponent<CountdownTimerScript>().flash(false);
+                        }
+                        countdownText.text = newText;
+                    }
+
+                    if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) || startedWaitingForPeer || (modes.Count != 2 && waitingTime >= 10f))
+                    {
+                        if (waitingTime >= 1.0f && !beginText.text.Equals("Game is over") && modes.Count == 2 || (modes.Count != 2 && waitingTime >= 10f && !beginText.text.Equals("Game is over")))
+                        {
+                            if (modes.Count != 2)
+                            {
+                                waiting = false;
+                                waitingTime = 0f;
+                                countdownText.gameObject.transform.localPosition = countdownTimerPosition;
+                            }
+
                             if (pieChart.activeInHierarchy)
                             {
                                 pieChart.GetComponent<PieGraphScript>().enabled = true;
@@ -556,17 +586,36 @@ public class GenerateTargetsScript : MonoBehaviour {
                                 }
                             }
                             controllerImage.gameObject.SetActive(false);
-                            postGameScreen.SetActive(false);
+                            if (modes.Count != 2)
+                                postGameScreen.SetActive(false);
                             beginText.gameObject.SetActive(false);
-                            waitingTime = 0f;
+
+                            if (modes.Count == 2 && !startedWaitingForPeer)
+                            {
+                                postGameScreen.GetComponentInChildren<Text>().enabled = false;
+                                startedWaitingForPeer = true;
+                                loadingScreen.GetComponent<Text>().enabled = true;
+                                loadingScreen.GetComponentInChildren<RawImage>().enabled = true;
+                                setWaitingTime = Random.Range(2f, 9f);
+                                waitingTime = 0f;
+                            }
+                            else if (waitingTime >= setWaitingTime)
+                            {
+                                waiting = false;
+                                startedWaitingForPeer = false;
+                                loadingScreen.GetComponent<Text>().enabled = false;
+                                loadingScreen.GetComponentInChildren<RawImage>().enabled = false;
+                                postGameScreen.GetComponentInChildren<Text>().enabled = true;
+                                postGameScreen.SetActive(false);
+                                waitingTime = 0f;
+                            }
                         }
                     }
                     if (beginText.text.Equals("Game is over"))
                     {
-                        if (numUserTargets > 0 || numPeerTargets > 0)
+                        if (!deletedAllTargets)
                         {
-                            numUserTargets = 0;
-                            numPeerTargets = 0;
+                            deletedAllTargets = true;
                             foreach (GameObject g in GameObject.FindGameObjectsWithTag("PeerTarget"))
                             {
                                 Destroy(g);
@@ -578,7 +627,6 @@ public class GenerateTargetsScript : MonoBehaviour {
                         }
                     }
                 }
-
 
                 if (!waiting)
                 {
@@ -721,7 +769,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                         string newText = Mathf.FloorToInt(countdownTimer + 1f).ToString();
                         if (!countdownText.text.Equals(newText))
                         {
-                            countdownText.gameObject.GetComponent<CountdownTimerScript>().flash();
+                            countdownText.gameObject.GetComponent<CountdownTimerScript>().flash(true);
                         }
                         countdownText.text = newText;
                     }

@@ -64,6 +64,7 @@
     <Compile Include="Assets\CountdownTimerScript.cs" />
     <Compile Include="Assets\DataCollector.cs" />
     <Compile Include="Assets\GenerateTargetsScript.cs" />
+    <Compile Include="Assets\LoadingScript.cs" />
     <Compile Include="Assets\Oculus\AudioManager\Scenes\Scripts\TestScript.cs" />
     <Compile Include="Assets\Oculus\AudioManager\Scripts\Audio\AmbienceEmitter.cs" />
     <Compile Include="Assets\Oculus\AudioManager\Scripts\Audio\AudioManager.cs" />

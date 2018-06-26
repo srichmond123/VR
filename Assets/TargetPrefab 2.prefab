@@ -200,6 +200,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   relativeDirectionAngle: 0
+  goalDirectionAngle: 0
+  oldDirectionAngle: 0
+  step: 0
+  theta: 0
+  phi: 0
   cameraTransform: {fileID: 0}
 --- !u!135 &135195839505851172
 SphereCollider:

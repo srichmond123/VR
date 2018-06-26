@@ -23,10 +23,14 @@ public class CountdownTimerScript : MonoBehaviour {
         }
     }
 
-    public void flash()
+    public void flash(bool sound)
     {
         time = 0f;
-        GetComponent<AudioSource>().Play();
+        if (sound)
+        {
+            GetComponent<AudioSource>().Play();
+        }
+
         GetComponent<Text>().color = Color.white;
     }
 }
