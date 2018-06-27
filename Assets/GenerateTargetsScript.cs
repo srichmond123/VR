@@ -123,6 +123,50 @@ public class GenerateTargetsScript : MonoBehaviour {
     {
         if (TargetShootScript.playing)
         {
+            if (Input.GetKeyDown(KeyCode.Space) && inTutorial) //Our shortcut to skip the tutorial
+            {
+                postGameScreen.GetComponentInChildren<Text>().enabled = true;
+                postGameScreen.SetActive(false);
+                beginText.gameObject.SetActive(false);
+                controllerImage.gameObject.SetActive(false);
+
+                TargetShootScript.userScore = 0;
+                TargetShootScript.scoreTextChangeFromOutside.text = "You       0";
+                VirtualPeerBehavior.peerPoints = 0;
+                VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer      0";
+
+                if (scoreBoardElements[0].transform.localPosition.y > -100f)
+                {
+                    foreach (GameObject i in scoreBoardElements)
+                    {
+                        i.transform.localPosition = new Vector3(i.transform.localPosition.x, i.transform.localPosition.y - 100f, i.transform.localPosition.z);
+                    }
+                }
+
+                for (int i = scoreBoardElements.Length-1; i >= 0; i--)
+                {
+                    scoreBoardElements[i].transform.SetAsFirstSibling();
+                }
+
+                if (barGraph.activeInHierarchy)
+                {
+                    if (barGraph.transform.parent.localPosition.y > -100f)
+                    {
+                        barGraph.transform.parent.localPosition =
+                        new Vector3(barGraph.transform.parent.localPosition.x, barGraph.transform.parent.localPosition.y - 100f, barGraph.transform.parent.localPosition.z);
+                    }
+                }
+                else
+                {
+                    if (pieChart.transform.localPosition.y > -100f)
+                    {
+                        pieChart.transform.localPosition =
+                            new Vector3(pieChart.transform.localPosition.x, pieChart.transform.localPosition.y - 100f, pieChart.transform.localPosition.z);
+                    }
+                }
+
+                inTutorial = false;
+            }
             if (inTutorial)
             {
                 if (stepOfTutorial == 0)
