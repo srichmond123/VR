@@ -10,7 +10,8 @@ public class DataCollector : MonoBehaviour {
     static string dataPath = "Data/";
     static string userPath = "";
     static bool writtenMovementDataColumnNames = false;
-    static bool writtenScoreDataColumnNames = false;
+    static bool writtenUserScoreDataColumnNames = false;
+    static bool writtenPeerScoreDataColumnNames = false;
 
     static GameObject ctrCamera;
     static GameObject handAnchor;
@@ -23,7 +24,8 @@ public class DataCollector : MonoBehaviour {
     int peerPoints = 0;
 
     static string oldModePathMovementData = ""; //So we can rewrite the column headers each change
-    static string oldModePathScoreData = "";
+    static string oldUserModePathScoreData = "";
+    static string oldPeerModePathScoreData = "";
     static string aloneStr = "Alone/";
     static string underperformStr = "Underperforming Peer/";
     static string overperformStr = "Overperforming Peer/";
@@ -123,61 +125,107 @@ public class DataCollector : MonoBehaviour {
         }
     }
 
-    public static void WriteEvent(string a) {
+    public static void WriteEvent(string a, Vector3 position) {
         if (collectingData && getModePath() != null) {
             string path;
             StreamWriter streamWriter;
 
-            if (writtenScoreDataColumnNames)
+            if (writtenUserScoreDataColumnNames)
             {
-                if (!oldModePathScoreData.Equals(getModePath()) && getModePath() != null)
+                if (!oldUserModePathScoreData.Equals(getModePath()) && getModePath() != null)
                 {
-                    writtenScoreDataColumnNames = false;
+                    writtenUserScoreDataColumnNames = false;
                 }
             }
 
-            if (!writtenScoreDataColumnNames)
+            if (writtenPeerScoreDataColumnNames)
             {
-                writtenScoreDataColumnNames = true;
+                if (!oldPeerModePathScoreData.Equals(getModePath()) && getModePath() != null)
+                {
+                    writtenPeerScoreDataColumnNames = false;
+                }
+            }
 
-                path = userPath + getModePath() + "ScoreData.csv";
-                oldModePathScoreData = getModePath();
+            if (!writtenUserScoreDataColumnNames)
+            {
+                writtenUserScoreDataColumnNames = true;
+
+                path = userPath + getModePath() + "UserScoreData.csv";
+                oldUserModePathScoreData = getModePath();
                 new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
                 streamWriter = new StreamWriter(path, true, Encoding.ASCII);
                 string handStr = "Left";
                 if (handAnchor.name.Equals("RightHandAnchor"))
                     handStr = "Right";
+                /*
                 streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
                     handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:,"
-                    + handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:\n");
+                    + handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:,Target position x:,Target position y:,Target position z:");
+                    */
+                streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Target position x:,Target position y:,Target position z:\n");
+
                 streamWriter.Close();
             }
+
+            if (!writtenPeerScoreDataColumnNames && !getModePath().Equals(aloneStr))
+            {
+                writtenPeerScoreDataColumnNames = true;
+
+                path = userPath + getModePath() + "PeerScoreData.csv";
+                oldPeerModePathScoreData = getModePath();
+                new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
+                streamWriter = new StreamWriter(path, true, Encoding.ASCII);
+                string handStr = "Left";
+                if (handAnchor.name.Equals("RightHandAnchor"))
+                    handStr = "Right";
+                /*
+                streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
+                    handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:,"
+                    + handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:,Target position x:,Target position y:,Target position z:");
+                    */
+                streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Target position x:,Target position y:,Target position z:\n");
+                streamWriter.Close();
+            }
+
 
             int userPoints = TargetShootScript.userScore;
             int peerPoints = VirtualPeerBehavior.peerPoints; //Update values
 
-            path = userPath + getModePath() + "ScoreData.csv";
+            string userOrPeer = "User";
+            if (a.IndexOf("Peer") == 0)
+            {
+                userOrPeer = "Peer";
+            }
+
+            path = userPath + getModePath() + userOrPeer + "ScoreData.csv";
 
             new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
             streamWriter = new StreamWriter(path, true, Encoding.ASCII);
+
+            string x = !Vector3.Equals(position, Vector3.zero) ? position.x.ToString() : " ";
+            string y = !Vector3.Equals(position, Vector3.zero) ? position.y.ToString() : " ";
+            string z = !Vector3.Equals(position, Vector3.zero) ? position.z.ToString() : " ";
 
             string line = DateTime.Now.ToString("yyyy/MM/dd - hh:mm:ss.fffffff") + ","
                 + time.ToString() + ","
                 + userPoints.ToString() + ","
                 + peerPoints.ToString() + ","
                 + a + ","
-                + ctrCamera.transform.localPosition.x.ToString() + ","
-                + ctrCamera.transform.localPosition.y.ToString() + ","
-                + ctrCamera.transform.localPosition.z.ToString() + ","
-                + ctrCamera.transform.localEulerAngles.x.ToString() + ","
-                + ctrCamera.transform.localEulerAngles.y.ToString() + ","
-                + ctrCamera.transform.localEulerAngles.z.ToString() + ","
-                + handAnchor.transform.localPosition.x.ToString() + ","
-                + handAnchor.transform.localPosition.y.ToString() + ","
-                + handAnchor.transform.localPosition.z.ToString() + ","
-                + handAnchor.transform.localEulerAngles.x.ToString() + ","
-                + handAnchor.transform.localEulerAngles.y.ToString() + ","
-                + handAnchor.transform.localEulerAngles.z.ToString() + "\n";
+                //+ ctrCamera.transform.localPosition.x.ToString() + ","
+                //+ ctrCamera.transform.localPosition.y.ToString() + ","
+                //+ ctrCamera.transform.localPosition.z.ToString() + ","
+                //+ ctrCamera.transform.localEulerAngles.x.ToString() + ","
+                //+ ctrCamera.transform.localEulerAngles.y.ToString() + ","
+                //+ ctrCamera.transform.localEulerAngles.z.ToString() + ","
+                //+ handAnchor.transform.localPosition.x.ToString() + ","
+                //+ handAnchor.transform.localPosition.y.ToString() + ","
+                //+ handAnchor.transform.localPosition.z.ToString() + ","
+                //+ handAnchor.transform.localEulerAngles.x.ToString() + ","
+                //+ handAnchor.transform.localEulerAngles.y.ToString() + ","
+                //+ handAnchor.transform.localEulerAngles.z.ToString() + ","
+                + x + ","
+                + y + ","
+                + z + "\n";
             streamWriter.Write(line);
             streamWriter.Close();
         }

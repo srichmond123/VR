@@ -69,7 +69,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                         //peerTargets[randIndex].layer = LayerMask.NameToLayer("Ignore Raycast");
                         peerTargets[randIndex].tag = "Destroying";
                         peerPoints++;
-                        DataCollector.WriteEvent("Peer hit peer's target");
+                        DataCollector.WriteEvent("Peer hit peer's target", peerTargets[randIndex].transform.localPosition);
 
                         GenerateTargetsScript.numPeerTargets--;
                         if (peerPoints < 10 && peerPoints > -10)
@@ -113,7 +113,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                         peerPoints--;
                         peerPoints = Mathf.Max(0, peerPoints);
                         TargetShootScript.userScore++;
-                        DataCollector.WriteEvent("Peer hit user's target");
+                        DataCollector.WriteEvent("Peer hit user's target", userTargets[randIndex].transform.localPosition);
                         GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.blue);
                         GenerateTargetsScript.numUserTargets--;
                         if (TargetShootScript.userScore < 10 && TargetShootScript.userScore > -10)
@@ -163,7 +163,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
                     else if (peerPoints > 0)
                     {
                         peerPoints--; //Missed
-                        DataCollector.WriteEvent("Peer missed");
+                        DataCollector.WriteEvent("Peer missed", Vector3.zero);
                         if (peerPoints < 10 && peerPoints > -10)
                         {
                             if (peerPoints >= 0)

@@ -62,7 +62,7 @@ public class TargetShootScript : MonoBehaviour {
                     if (hit.transform.parent.parent.parent.tag.Equals("UserTarget"))
                     {
                         userScore++;
-                        DataCollector.WriteEvent("User hit user's target");
+                        DataCollector.WriteEvent("User hit user's target", hit.transform.parent.parent.parent.localPosition);
                         GenerateTargetsScript.numUserTargets--;
                         GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.blue);
 
@@ -85,7 +85,7 @@ public class TargetShootScript : MonoBehaviour {
                         userScore--;
                         userScore = Mathf.Max(0, userScore);
                         VirtualPeerBehavior.peerPoints++;
-                        DataCollector.WriteEvent("User hit peer's target");
+                        DataCollector.WriteEvent("User hit peer's target", hit.transform.parent.parent.parent.localPosition);
                         GameObject.Find("whitenPanel").GetComponent<ScoreFlashScript>().flash(Color.red);
                         GenerateTargetsScript.numPeerTargets--;
 
@@ -131,7 +131,7 @@ public class TargetShootScript : MonoBehaviour {
                     userScore = Mathf.Max(0, userScore);
                     //Debug.DrawRay(transform.parent.transform.position, transform.TransformDirection(Vector3.forward) * 1000, Color.red);
                     //Debug.Log("Did not Hit");
-                    DataCollector.WriteEvent("User missed");
+                    DataCollector.WriteEvent("User missed", Vector3.zero);
                 }
                 if (userScore < 10 && userScore > -10)
                 {
