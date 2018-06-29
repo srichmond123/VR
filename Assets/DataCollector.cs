@@ -206,10 +206,12 @@ public class DataCollector : MonoBehaviour {
             string y = !Vector3.Equals(position, Vector3.zero) ? position.y.ToString() : " ";
             string z = !Vector3.Equals(position, Vector3.zero) ? position.z.ToString() : " ";
 
+            string peerPointsStr = getModePath().Equals("Alone/") ? " " : peerPoints.ToString();
+
             string line = DateTime.Now.ToString("yyyy/MM/dd - hh:mm:ss.fffffff") + ","
                 + time.ToString() + ","
                 + userPoints.ToString() + ","
-                + peerPoints.ToString() + ","
+                + peerPointsStr + ","
                 + a + ","
                 //+ ctrCamera.transform.localPosition.x.ToString() + ","
                 //+ ctrCamera.transform.localPosition.y.ToString() + ","

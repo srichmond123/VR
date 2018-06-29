@@ -1,8 +1,0 @@
-Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Target position x:,Target position y:,Target position z:
-2018/06/27 - 01:54:46.3594828,2.371821,0,0,User missed, , , 
-2018/06/27 - 01:54:46.7464344,2.760853,1,0,User hit user's target,-2.494809,3.961577,3.319043
-2018/06/27 - 01:54:47.8599214,3.87272,2,0,User hit user's target,-4.559492,4.468427,-1.368419
-2018/06/27 - 01:54:48.4925809,4.505973,3,0,User hit user's target,-1.972026,2.687439,3.243645
-2018/06/27 - 01:54:50.9712234,6.984757,4,0,User hit user's target,-2.558106,4.904503,-3.430075
-2018/06/27 - 01:54:51.6339793,7.638939,5,0,User hit user's target,-3.842377,2.721946,1.255477
-2018/06/27 - 01:54:52.7017090,8.716408,6,0,User hit user's target,-0.8390945,3.186841,3.987481
