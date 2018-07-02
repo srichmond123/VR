@@ -16,7 +16,6 @@ public class GenerateTargetsScript : MonoBehaviour {
     public GameObject pieChart;
     public GameObject postGameScreen; //The "you won by X points" message
     public GameObject[] scoreBoardElements; //for convenience, during the tutorial this will be moved out of the way.
-    public RawImage arrowImage;
     public Text countdownText;
     public Text beginText;
     public RawImage controllerImage;
@@ -80,7 +79,6 @@ public class GenerateTargetsScript : MonoBehaviour {
     public int performanceConstant;
 
     void Start () {
-        arrowImage.enabled = false;
         countdownTimer = GAME_TIME;
         countdownText.text = "";
         //postGameScreen.SetActive(false);
@@ -171,7 +169,6 @@ public class GenerateTargetsScript : MonoBehaviour {
                             new Vector3(pieChart.transform.localPosition.x, pieChart.transform.localPosition.y - 100f, pieChart.transform.localPosition.z);
                     }
                 }
-                arrowImage.enabled = false;
                 inTutorial = false;
             }
             if (inTutorial)
@@ -214,8 +211,8 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                     beginText.gameObject.SetActive(true);
                     controllerImage.gameObject.SetActive(true);
-                    beginText.text = "In this game, you will see 2 sets of balloons floating around, colored <color=blue>BLUE</color> and " +
-                            "<color=red>RED</color>.\n\nYour goal is to aim at and pop only <color=blue>BLUE</color> balloons." +
+                    beginText.text = "In this game, you will see two sets of balloons floating around, colored <color=blue>BLUE</color> and " +
+                            "<color=red>RED</color>.\n\nYour goal is to aim at and pop <b>only</b> <color=blue>BLUE</color> balloons." +
                             "\n\n\n        (Press this button to continue)";
                     controllerImage.transform.localPosition = new Vector3(-34.225f, -196.187f, 13.73f);
 
@@ -226,8 +223,8 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                         controllerImage.transform.localPosition = new Vector3(-34.225f, -196.137f, 13.73f);
 
-                        beginText.text = "For practice, a <color=blue>BLUE</color> balloon will appear.\n\nYou " +
-                            "will pop it by pressing the button by your index finger.\n\n\n        (Press this button to continue)";
+                        beginText.text = "For practice, a <color=blue>BLUE</color> balloon will now appear.\n\nTry to pop it by pressing the button near your index finger." +
+                            "\n\n\n        (Press this button to continue)";
                     }
                 }
                 else if (stepOfTutorial == 2)
@@ -265,7 +262,7 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                         stepOfTutorial++;
 
-                        controllerImage.transform.localPosition = new Vector3(-34.225f, -195.929f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.169f, -195.992f, 13.73f);
 
                         beginText.transform.localPosition = new Vector3(-33.913f, -195.79f, 13.73f);
 
@@ -276,8 +273,8 @@ public class GenerateTargetsScript : MonoBehaviour {
                         }
                         beginText.fontSize = 30;
                         postGameScreen.transform.SetAsFirstSibling();
-                        arrowImage.enabled = true;
-                        beginText.text = "Your goal is to gain as many points as possible.\n\n\n        (Press this button to continue)"; // +
+                        beginText.text = "This scoreboard will display you and your peer's total number of points.\n\n" +
+                            "Your goal is to gain as many points as possible.\n\n\n        (Press this button to continue)"; // +
                                                                                                                                           /* "You will be competing against a peer.\nTheir goal is to pop <color=red>RED</color> balloons.\n\n" +
                                                                                                                                            "If you <b>miss</b>, you will <b>lose</b> 1 point.\n\n" +
                                                                                                                                            "If you hit one of your peer's <color=red>RED</color> balloons, you will <b>lose</b> 1 point and " +
@@ -291,14 +288,13 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                     if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) && timeSpentOnTutorialStep >= 0.75f)
                     {
-                        arrowImage.enabled = false;
                         beginText.fontSize = 35;
 
-                        controllerImage.transform.localPosition = new Vector3(-34.225f, -196.076f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.076f, 13.73f);
 
-                        beginText.text = "If you pop a <color=blue>BLUE</color> balloon you will <b>gain</b> 1 point.\n\n" +
-                            "If you miss or pop a <color=red>RED</color> balloon, you will <b>lose</b> 1 point." +
-                            "\n\n\n        (Press this button to continue)";
+                        beginText.text = "If you pop a <color=blue>BLUE</color> balloon you will <b>gain</b> one point.\n\n" +
+                            "If you miss, you will <b>lose</b> one point." +
+                            "\n\n\n\n        (Press this button to continue)";
                         timeSpentOnTutorialStep = 0f;
                         stepOfTutorial++;
                     }
@@ -331,10 +327,10 @@ public class GenerateTargetsScript : MonoBehaviour {
                         beginText.transform.localPosition = new Vector3(-33.913f, -195.796f, 13.73f);
                         beginText.text = "You will play 4 rounds,\n" +
                             "each lasting " + (GAME_TIME / 60) + " minutes.\n\n\n" +
-                            "For the first round you will play alone.\n\n" +
-                            "You will then be connected with a peer, who you will compete against for the following 3 rounds." +
+                            "For the first round, you will play alone.\n\n" +
+                            "Then, you will be connected with a peer, whom you will compete against for the following 3 rounds." +
                             "\n\n\n        (Press this button to continue)";
-                        controllerImage.transform.localPosition = new Vector3(-34.225f, -196.244f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.244f, 13.73f);
                         stepOfTutorial++;
                         timeSpentOnTutorialStep = 0f;
                     }
@@ -345,10 +341,13 @@ public class GenerateTargetsScript : MonoBehaviour {
                     timeSpentOnTutorialStep += Time.deltaTime;
                     if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) && timeSpentOnTutorialStep >= 0.75f)
                     {
-                        beginText.text = "Your peer will <b>gain</b> 1 point if they pop a <color=RED>RED</color> balloon.\n" +
-                            "They will <b>lose</b> 1 point if they miss or if they pop <color=BLUE>BLUE</color> ballooons.\n\n" +
-                            "If you pop a <color=RED>RED</color> balloon your peer will gain 1 point.\n" +
-                            "If your peer pops a <color=BLUE>BLUE</color> balloon you will <b>gain</b> 1 point" +
+                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.2819f, 13.73f);
+                        
+                        beginText.text = "Your peer will pop <color=RED>RED</color> balloons.\n\n\n" +
+                            "If you pop a <color=RED>RED</color> balloon your peer will <b>gain</b> one point," +
+                            " and you will lose one point for missing.\n\n" +
+                            "If your peer pops a <color=BLUE>BLUE</color> balloon you will <b>gain</b> one point " +
+                            "and they will lose one point for missing." +
                             "\n\n\n        (Press this button to continue)";
                         timeSpentOnTutorialStep = 0f;
                         stepOfTutorial++;
@@ -368,11 +367,11 @@ public class GenerateTargetsScript : MonoBehaviour {
                             barGraph.transform.parent.localPosition =
                                 new Vector3(barGraph.transform.parent.localPosition.x, barGraph.transform.parent.localPosition.y - 100f, barGraph.transform.parent.localPosition.z);
                             beginText.text = "The bar above will show the difference between your score and your peer's score.\n" +
-                                "\nIf you are in the lead, the bar will be <color=blue>BLUE</color> by the amount you are ahead.\n\n" +
-                                "If your peer is in the lead, the bar will be <color=red>RED</color> by the amount they are ahead.\n\n\n" +
+                                "\n\nIf you are leading, the bar will be <color=blue>BLUE</color>.\n\n\n" +
+                                "If your peer is leading, the bar will be <color=red>RED</color>.\n\n\n\n" +
                                 "        (Press this button to continue)";
                             beginText.transform.localPosition = new Vector3(-33.913f, -195.882f, 13.73f);
-                            controllerImage.transform.localPosition = new Vector3(-34.225f, -196.298f, 13.73f);
+                            controllerImage.transform.localPosition = new Vector3(-34.202f, -196.298f, 13.73f);
                         }
                         else
                         {
@@ -381,7 +380,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                             beginText.text = "The pie chart above will show your score, in <color=blue>BLUE</color>, in comparison to " +
                                 "your peer's score, in <color=red>RED</color>.\n\n\n" +
                                 "        (Press this button to continue)";
-                            controllerImage.transform.localPosition = new Vector3(-34.225f, -196.251f, 13.73f);
+                            controllerImage.transform.localPosition = new Vector3(-34.202f, -196.251f, 13.73f);
                             beginText.transform.localPosition = new Vector3(-33.913f, -196.069f, 13.73f);
 
                         }
@@ -404,7 +403,7 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                         if (barGraph.activeInHierarchy)
                         {
-                            controllerImage.transform.localPosition = new Vector3(-34.225f, -196.061f, 13.73f);
+                            controllerImage.transform.localPosition = new Vector3(-34.202f, -196.061f, 13.73f);
                         }
 
                         timeSpentOnTutorialStep = 0f;
@@ -425,7 +424,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                             "\n\n\n        (Press this button to continue)";
                         if (barGraph.activeInHierarchy)
                         {
-                            controllerImage.transform.localPosition = new Vector3(-34.225f, -196.0351f, 13.73f);
+                            controllerImage.transform.localPosition = new Vector3(-34.202f, -196.0351f, 13.73f);
                         }
 
                         timeSpentOnTutorialStep = 0f;
@@ -455,11 +454,11 @@ public class GenerateTargetsScript : MonoBehaviour {
                     if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) && timeSpentOnTutorialStep >= 0.75f)
                     {
                         barGraph.transform.parent.GetComponentInChildren<Text>().enabled = false;
-                        beginText.text = "Once you approach the final 10 seconds of the round, a timer, shown above," +
-                            "will appear, showing the seconds remaining.\n\n\n        (Press this button to continue)";
+                        beginText.text = "Once you approach the final 10 seconds of the round, a timer" +
+                            " will appear, showing the seconds remaining.\n\n\n        (Press this button to continue)";
 
                         beginText.transform.localPosition = new Vector3(-33.913f, -196.003f, 13.73f);
-                        controllerImage.transform.localPosition = new Vector3(-34.225f, -196.1908f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.1908f, 13.73f);
 
                         timeSpentOnTutorialStep = 0f;
                         stepOfTutorial++;
@@ -491,7 +490,7 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                         beginText.text = "Before you begin the first " + (GAME_TIME / 60) + " minute round, you will play" +
                             " a 30 second practice round alone, where no data will be collected.\n\n\n        (Press this button to start the\n         practice round)";
-                        controllerImage.transform.localPosition = new Vector3(-34.225f, -196.239f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.239f, 13.73f);
 
                         timeSpentOnTutorialStep = 0f;
                         countdownText.text = "";
@@ -542,10 +541,10 @@ public class GenerateTargetsScript : MonoBehaviour {
                     postGameScreen.SetActive(true);
                     beginText.gameObject.SetActive(true);
                     controllerImage.gameObject.SetActive(true);
-                    controllerImage.transform.localPosition = new Vector3(-34.225f, -196.1599f, 13.73f);
+                    controllerImage.transform.localPosition = new Vector3(-34.231f, -196.221f, 13.73f);
                     
-                    beginText.text = "If you don't have any questions,\nyou can begin playing." +
-                        "\n\n\n        (Press to begin the first round)";
+                    beginText.text = "You are now ready to begin the first round.\n\nDo you have any questions?\n\n" +
+                        "\n\n     (If not, press to begin the first round)";
 
                     timeSpentOnTutorialStep += Time.deltaTime;
 
@@ -651,14 +650,16 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                                 barGraph.transform.parent.GetComponentInChildren<Text>().enabled = false;
                                 beginText.gameObject.SetActive(true);
-                                beginText.GetComponent<RectTransform>().sizeDelta = new Vector2(543.39f, 17.8f);
+
+                                //beginText.GetComponent<RectTransform>().sizeDelta = new Vector2(543.39f, 17.8f);
+
                                 if (modes.Count == 2) //If the player just came from the playing alone screen, they need a unique message:
                                 {
-                                    beginText.text = "You will now compete against a peer.\n\n(Press this button to continue)";
+                                    beginText.text = "You will now compete against a peer.\n\n\n(Press this button to continue)";
                                     beginText.transform.localPosition =
                                         new Vector3(-33.913f, -195.875f, 13.73f);
                                     controllerImage.transform.localPosition =
-                                        new Vector3(-34.262f, -196.004f, 13.73f);
+                                        new Vector3(-34.237f, -196.004f, 13.73f);
                                     beginText.fontSize = 35;
                                 }
                                 else
@@ -666,6 +667,9 @@ public class GenerateTargetsScript : MonoBehaviour {
                                     controllerImage.gameObject.SetActive(false);
                                     //controllerImage.transform.localPosition =
                                     //    new Vector3(-34.248f, -195.8729f, 13.73f);
+                                    beginText.transform.localPosition =
+                                        new Vector3(-34.008f, -195.875f, 13.73f);
+                                    
                                     beginText.color = Color.white;
                                     beginText.text = "Next game starts in: ";
                                     countdownText.gameObject.transform.localPosition =
@@ -680,6 +684,9 @@ public class GenerateTargetsScript : MonoBehaviour {
                             postGameScreen.SetActive(true);
                             barGraph.GetComponent<Image>().enabled = false;
                             barGraph.transform.parent.GetComponentInChildren<Text>().enabled = false;
+                            beginText.transform.localPosition =
+                                        new Vector3(-33.975f, -195.875f, 13.73f);
+                            
                             beginText.text = "The game is over now,\nthank you for your cooperation!";
                             gameIsOver = true;
                             virtualPeer.GetComponent<VirtualPeerBehavior>().enabled = false;

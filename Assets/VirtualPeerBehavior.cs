@@ -47,7 +47,7 @@ public class VirtualPeerBehavior : MonoBehaviour {
             timeChangeRandomNoise += Time.deltaTime; //Change the noise every 10 seconds, randomly
             int currentUserScore = TargetShootScript.userScore;
             threshold = currPerformanceConstant + noise;
-            peerGoal = currentUserScore + threshold;
+            peerGoal = Mathf.Max(0, currentUserScore + threshold);
 
             if (time >= nextActionTime && nextActionTime > 0f)
             {
