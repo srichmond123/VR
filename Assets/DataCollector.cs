@@ -146,7 +146,7 @@ public class DataCollector : MonoBehaviour {
                 }
             }
 
-            if (!writtenUserScoreDataColumnNames)
+            if (!writtenUserScoreDataColumnNames && !getModePath().Equals(aloneStr))
             {
                 writtenUserScoreDataColumnNames = true;
 

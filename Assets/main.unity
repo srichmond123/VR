@@ -1073,7 +1073,7 @@ MonoBehaviour:
   material2: {fileID: 2100000, guid: 8d7450cbbcdfa544e8f869004a234ec4, type: 2}
   userTargetsCap: 3
   peerTargetsCap: 3
-  GAME_TIME: 15
+  GAME_TIME: 180
   normalMode: 0
   increaseIntervalBasedOnDensityMode: 0
   constantBalloonsWithNoise: 1
