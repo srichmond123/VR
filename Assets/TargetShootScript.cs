@@ -125,7 +125,7 @@ public class TargetShootScript : MonoBehaviour {
 
                     }
                 }
-                else if (!GenerateTargetsScript.inTutorial)
+                else if (!GenerateTargetsScript.inTutorial || GenerateTargetsScript.stepOfTutorial == 14)
                 {
                     userScore--;
                     userScore = Mathf.Max(0, userScore);

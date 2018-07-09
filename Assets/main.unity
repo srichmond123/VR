@@ -1071,9 +1071,9 @@ MonoBehaviour:
   controllerImage: {fileID: 1645303285}
   material1: {fileID: 2100000, guid: 29ea2c9893f58d34a90a649c51be2462, type: 2}
   material2: {fileID: 2100000, guid: 8d7450cbbcdfa544e8f869004a234ec4, type: 2}
-  userTargetsCap: 3
-  peerTargetsCap: 3
-  GAME_TIME: 180
+  userTargetsCap: 4
+  peerTargetsCap: 4
+  GAME_TIME: 45
   normalMode: 0
   increaseIntervalBasedOnDensityMode: 0
   constantBalloonsWithNoise: 1

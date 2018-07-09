@@ -38,6 +38,8 @@ public class GenerateTargetsScript : MonoBehaviour {
     float waitingTime = 0f;
     bool deletedAllTargets = false;
 
+    static bool skipLoadingScreen = false;
+
     public static bool waiting = false;
     public static int numUserTargets = 0;
     public static int numPeerTargets = 0;
@@ -55,9 +57,12 @@ public class GenerateTargetsScript : MonoBehaviour {
     public static int stepOfTutorial = 1;
     static bool startedWaitingForPeer = false;
 
+    static bool shownLoadingScreen = false;
+    static string prevMode = "";
+
     float setWaitingTime = 0f;
 
-    List<string> modes;
+    public static List<string> modes;
     public static string currentMode = "";
     public int GAME_TIME = 120; //2 minutes
     float countdownTimer;
@@ -65,6 +70,8 @@ public class GenerateTargetsScript : MonoBehaviour {
     float timeSpentOnTutorialStep = 0f;
 
     bool gameIsOver = false;
+
+    static bool firstPeerRoundWasPicked = false;
 
     Vector3 countdownTimerPosition;
 
@@ -94,11 +101,13 @@ public class GenerateTargetsScript : MonoBehaviour {
             peerInterval = 2.0f;
         }
 
-        modes = new List<string>();
-        modes.Add("Alone");
+        /*
         modes.Add("Equally perform");
+       
         modes.Add("Underperform");
+        modes.Add("Alone");
         modes.Add("Overperform");
+        */
 
 
         ///////////////
@@ -571,16 +580,24 @@ public class GenerateTargetsScript : MonoBehaviour {
                     {
                         if (modes.Count > 0) //Picking next gameplay mode:
                         {
-                            if (modes.Count != 4)
+                            //if (modes.Count != 4)
+                            //{
+                            //    int index = Random.Range(0, modes.Count);
+                            //    currentMode = modes[index];
+                            //    modes.RemoveAt(index);
+                            //}
+                            //else
+                            //{
+                                currentMode = modes[0];
+                                modes.RemoveAt(0); //Make Alone first mode
+                            //}
+                            if (!firstPeerRoundWasPicked && !currentMode.Equals("Alone"))
                             {
-                                int index = Random.Range(0, modes.Count);
-                                currentMode = modes[index];
-                                modes.RemoveAt(index);
+                                firstPeerRoundWasPicked = true;
                             }
                             else
                             {
-                                currentMode = modes[0];
-                                modes.RemoveAt(0); //Make Alone first mode
+                                skipLoadingScreen = true;
                             }
 
                             foreach (GameObject g in GameObject.FindGameObjectsWithTag("PeerTarget"))
@@ -626,14 +643,18 @@ public class GenerateTargetsScript : MonoBehaviour {
                             {
                                 virtualPeer.GetComponent<VirtualPeerBehavior>().performanceConstant = performanceConstant;
                             }
-                            if (modes.Count < 3) //If this isn't the first mode change, then have a waiting screen:
+                            if (modes.Count < 3 || firstPeerRoundWasPicked) //If this isn't the first mode change, then have a waiting screen:
                             {
                                 waiting = true;
                                 controllerImage.gameObject.SetActive(true);
                                 postGameScreen.SetActive(true);
+                                if (prevMode.Equals("")) //If a round wasn't played
+                                    postGameScreen.GetComponentInChildren<Text>().enabled = false;
+                                else
+                                    postGameScreen.GetComponentInChildren<Text>().enabled = true;
 
                                 string plural = (Mathf.Abs(scoreDifference) > 1 || scoreDifference == 0) ? " points" : " point";
-                                if (modes.Count != 2) //If they didn't just play alone
+                                if (!prevMode.Equals("Alone")) //If they didn't just play alone
                                 {
 
                                     if (scoreDifference > 0) //User won
@@ -652,29 +673,28 @@ public class GenerateTargetsScript : MonoBehaviour {
                                 beginText.gameObject.SetActive(true);
 
                                 //beginText.GetComponent<RectTransform>().sizeDelta = new Vector2(543.39f, 17.8f);
-
-                                if (modes.Count == 2) //If the player just came from the playing alone screen, they need a unique message:
-                                {
-                                    beginText.text = "You will now compete against a peer.\n\n\n(Press this button to continue)";
-                                    beginText.transform.localPosition =
-                                        new Vector3(-33.913f, -195.875f, 13.73f);
-                                    controllerImage.transform.localPosition =
-                                        new Vector3(-34.237f, -196.004f, 13.73f);
-                                    beginText.fontSize = 35;
-                                }
-                                else
-                                {
-                                    controllerImage.gameObject.SetActive(false);
-                                    //controllerImage.transform.localPosition =
-                                    //    new Vector3(-34.248f, -195.8729f, 13.73f);
-                                    beginText.transform.localPosition =
-                                        new Vector3(-34.008f, -195.875f, 13.73f);
+                            }
+                            if (firstPeerRoundWasPicked && !shownLoadingScreen) //If the player just came from the playing alone screen, they need a unique message:
+                            {
+                                beginText.text = "You will now compete against a peer.\n\n\n(Press this button to continue)";
+                                beginText.transform.localPosition =
+                                    new Vector3(-33.913f, -195.875f, 13.73f);
+                                controllerImage.transform.localPosition =
+                                    new Vector3(-34.237f, -196.004f, 13.73f);
+                                beginText.fontSize = 35;
+                            }
+                            else if (modes.Count < 3)
+                            {
+                                controllerImage.gameObject.SetActive(false);
+                                //controllerImage.transform.localPosition =
+                                //    new Vector3(-34.248f, -195.8729f, 13.73f);
+                                beginText.transform.localPosition =
+                                    new Vector3(-34.008f, -195.875f, 13.73f);
                                     
-                                    beginText.color = Color.white;
-                                    beginText.text = "Next game starts in: ";
-                                    countdownText.gameObject.transform.localPosition =
-                                        new Vector3(-33.81499f, -195.8939f, 13.73f);
-                                }
+                                beginText.color = Color.white;
+                                beginText.text = "Next game starts in: ";
+                                countdownText.gameObject.transform.localPosition =
+                                    new Vector3(-33.81499f, -195.8939f, 13.73f);
                             }
                         }
                         else
@@ -713,7 +733,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                         }
                         waitingTime += Time.deltaTime;
 
-                        if (modes.Count != 2 && !gameIsOver)
+                        if (modes.Count < 3 && !gameIsOver && (setWaitingTime == 0f && shownLoadingScreen))
                         {
                             string newText = Mathf.FloorToInt(11f - waitingTime).ToString();
                             if (!newText.Equals(countdownText.text))
@@ -722,17 +742,14 @@ public class GenerateTargetsScript : MonoBehaviour {
                             }
                             countdownText.text = newText;
                         }
+                        
 
-                        if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) || startedWaitingForPeer || (modes.Count != 2 && waitingTime >= 10f))
+                        if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) || startedWaitingForPeer || (modes.Count < 3 && waitingTime >= 10f))
                         {
-                            if (waitingTime >= 1.0f && !gameIsOver && modes.Count == 2 || (modes.Count != 2 && waitingTime >= 10f && !gameIsOver))
+                            if (waitingTime >= 1.0f && !gameIsOver && modes.Count == 2 || (modes.Count != 2 && waitingTime >= 10f && !gameIsOver) || (firstPeerRoundWasPicked && !shownLoadingScreen) || (waitingTime >= setWaitingTime && setWaitingTime > 0f))
                             {
-                                if (modes.Count != 2)
-                                {
-                                    waiting = false;
-                                    waitingTime = 0f;
-                                    countdownText.gameObject.transform.localPosition = countdownTimerPosition;
-                                }
+                                //if (modes.Count < 3)
+                                
 
                                 if (pieChart.activeInHierarchy)
                                 {
@@ -743,13 +760,16 @@ public class GenerateTargetsScript : MonoBehaviour {
                                     }
                                 }
                                 controllerImage.gameObject.SetActive(false);
-                                if (modes.Count != 2)
-                                    postGameScreen.SetActive(false);
+                                
                                 beginText.gameObject.SetActive(false);
-                                barGraph.transform.parent.GetComponentInChildren<Text>().enabled = true;
 
-                                if (modes.Count == 2 && !startedWaitingForPeer)
+                                if (!currentMode.Equals("Alone"))
+                                    barGraph.transform.parent.GetComponentInChildren<Text>().enabled = true;
+
+                                if (!shownLoadingScreen && !startedWaitingForPeer)
                                 {
+                                    shownLoadingScreen = true;
+                                    skipLoadingScreen = false;
                                     postGameScreen.GetComponentInChildren<Text>().enabled = false;
                                     startedWaitingForPeer = true;
                                     loadingScreen.GetComponent<Text>().enabled = true;
@@ -760,6 +780,8 @@ public class GenerateTargetsScript : MonoBehaviour {
                                 }
                                 else if (waitingTime >= setWaitingTime)
                                 {
+                                    skipLoadingScreen = true;
+                                    setWaitingTime = 0f;
                                     waiting = false;
                                     startedWaitingForPeer = false;
                                     loadingScreen.GetComponent<Text>().enabled = false;
@@ -767,6 +789,14 @@ public class GenerateTargetsScript : MonoBehaviour {
                                     postGameScreen.GetComponentInChildren<Text>().enabled = true;
                                     postGameScreen.SetActive(false);
                                     waitingTime = 0f;
+                                }
+
+                                if (skipLoadingScreen)
+                                {
+                                    waiting = false;
+                                    waitingTime = 0f;
+                                    countdownText.gameObject.transform.localPosition = countdownTimerPosition;
+                                    postGameScreen.SetActive(false);
                                 }
                             }
                         }
@@ -913,6 +943,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                     {
                         scoreDifference = currentMode.Equals("Alone") || currentMode.Equals("") ?
                             TargetShootScript.userScore : TargetShootScript.userScore - VirtualPeerBehavior.peerPoints;
+                        prevMode = currentMode;
                         currentMode = "";
 
                         TargetShootScript.userScore = 0;
@@ -968,9 +999,18 @@ public class GenerateTargetsScript : MonoBehaviour {
 
             if (barGraph.activeInHierarchy)
             {
-                barGraph.GetComponent<BarGraphScript>().enabled = true;
-                barGraph.transform.parent.GetComponentInChildren<Text>().enabled = true;
-                barGraph.GetComponent<Image>().enabled = true; //So it's not stuck on some score
+                if (!currentMode.Equals("Alone"))
+                {
+                    barGraph.GetComponent<BarGraphScript>().enabled = true;
+                    barGraph.transform.parent.GetComponentInChildren<Text>().enabled = true;
+                    barGraph.GetComponent<Image>().enabled = true; //So it's not stuck on some score
+                }
+                else
+                {
+                    barGraph.GetComponent<BarGraphScript>().enabled = false;
+                    barGraph.transform.parent.GetComponentInChildren<Text>().enabled = false;
+                    barGraph.GetComponent<Image>().enabled = false; //So it's not stuck on some score
+                }
             }
             else
             {
@@ -980,6 +1020,50 @@ public class GenerateTargetsScript : MonoBehaviour {
                     i.enabled = true;
                 }
             }
+        }
+    }
+
+    public static void decideModesOrder(int userID)
+    {
+        modes = new List<string>();
+        int id = userID % 24; //4*3*2*1 possible combinations
+        List<string> combinations = new List<string>();
+        for (int a = 1; a <= 4; a++)
+        {
+            for (int b = 1; b <= 4; b++)
+            {
+                for (int c = 1; c <= 4; c++)
+                {
+                    for (int d = 1; d <= 4; d++)
+                    {
+                        if (a != b && a != c && a != d && b != c && b != d && c != d)
+                        {
+                            combinations.Add(a.ToString() + b.ToString() + c.ToString() + d.ToString());
+                        }
+                    }
+                }
+            }
+        }
+        modes.Clear();
+        for (int i = 0; i < combinations[id].Length; i++)
+        {
+            int modeID = (int) System.Char.GetNumericValue(combinations[id].ToCharArray()[i]);
+            Debug.Log(modeID);
+            string modeName;
+            if (modeID == 1)
+                modeName = "Alone";
+            else if (modeID == 2)
+                modeName = "Underperform";
+            else if (modeID == 3)
+                modeName = "Equally perform";
+            else
+                modeName = "Overperform";
+
+            modes.Add(modeName);
+        }
+        for (int i = 0; i < modes.Count; i++)
+        {
+            Debug.Log(modes[i]);
         }
     }
 }

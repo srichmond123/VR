@@ -10,12 +10,11 @@ public class DataCollector : MonoBehaviour {
     static string dataPath = "Data/";
     static string userPath = "";
     static bool writtenMovementDataColumnNames = false;
-    static bool writtenUserScoreDataColumnNames = false;
-    static bool writtenPeerScoreDataColumnNames = false;
+    static bool writtenScoreDataColumnNames = false;
 
     static GameObject ctrCamera;
     static GameObject handAnchor;
-    static int userID;
+    public static int userID;
     static float time = 0f;
     public bool makeUserPath;
     public static bool collectingData = false;
@@ -24,8 +23,7 @@ public class DataCollector : MonoBehaviour {
     int peerPoints = 0;
 
     static string oldModePathMovementData = ""; //So we can rewrite the column headers each change
-    static string oldUserModePathScoreData = "";
-    static string oldPeerModePathScoreData = "";
+    static string oldModePathScoreData = "";
     static string aloneStr = "Alone/";
     static string underperformStr = "Underperforming Peer/";
     static string overperformStr = "Overperforming Peer/";
@@ -40,6 +38,8 @@ public class DataCollector : MonoBehaviour {
             //Right handed:
             Directory.CreateDirectory(dataPath);
             userID = Directory.GetDirectories(dataPath).Length;
+
+            GenerateTargetsScript.decideModesOrder(userID);
 
             userPath = dataPath + "User-" + userID + '/';
             Directory.CreateDirectory(userPath);
@@ -97,7 +97,7 @@ public class DataCollector : MonoBehaviour {
 
                 streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
                     handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:," 
-                    + handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:\n");
+                    + handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:,User points:,Peer points:\n");
                 streamWriter.Close();
             }
             path = userPath + getModePath() + "MovementData.csv";
@@ -118,7 +118,9 @@ public class DataCollector : MonoBehaviour {
                 + handAnchor.transform.localPosition.z.ToString() + ","
                 + handAnchor.transform.localEulerAngles.x.ToString() + ","
                 + handAnchor.transform.localEulerAngles.y.ToString() + ","
-                + handAnchor.transform.localEulerAngles.z.ToString() + "\n";
+                + handAnchor.transform.localEulerAngles.z.ToString() + ","
+                + TargetShootScript.userScore + ","
+                + VirtualPeerBehavior.peerPoints + "\n";
             streamWriter.Write(line);
             streamWriter.Close();
             time += Time.deltaTime;
@@ -130,28 +132,29 @@ public class DataCollector : MonoBehaviour {
             string path;
             StreamWriter streamWriter;
 
-            if (writtenUserScoreDataColumnNames)
+            if (writtenScoreDataColumnNames)
             {
-                if (!oldUserModePathScoreData.Equals(getModePath()) && getModePath() != null)
+                if (!oldModePathScoreData.Equals(getModePath()))
                 {
-                    writtenUserScoreDataColumnNames = false;
+                    writtenScoreDataColumnNames = false;
                 }
             }
-
+            /*
             if (writtenPeerScoreDataColumnNames)
             {
-                if (!oldPeerModePathScoreData.Equals(getModePath()) && getModePath() != null)
+                if (!oldPeerModePathScoreData.Equals(getModePath()))
                 {
                     writtenPeerScoreDataColumnNames = false;
                 }
             }
+            */
 
-            if (!writtenUserScoreDataColumnNames && !getModePath().Equals(aloneStr))
+            if (!writtenScoreDataColumnNames) //&& !getModePath().Equals(aloneStr)
             {
-                writtenUserScoreDataColumnNames = true;
+                writtenScoreDataColumnNames = true;
 
-                path = userPath + getModePath() + "UserScoreData.csv";
-                oldUserModePathScoreData = getModePath();
+                path = userPath + getModePath() + "ScoreData.csv";
+                oldModePathScoreData = getModePath();
                 new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
                 streamWriter = new StreamWriter(path, true, Encoding.ASCII);
                 string handStr = "Left";
@@ -166,7 +169,7 @@ public class DataCollector : MonoBehaviour {
 
                 streamWriter.Close();
             }
-
+            /*
             if (!writtenPeerScoreDataColumnNames && !getModePath().Equals(aloneStr))
             {
                 writtenPeerScoreDataColumnNames = true;
@@ -178,26 +181,29 @@ public class DataCollector : MonoBehaviour {
                 string handStr = "Left";
                 if (handAnchor.name.Equals("RightHandAnchor"))
                     handStr = "Right";
-                /*
-                streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
-                    handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:,"
-                    + handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:,Target position x:,Target position y:,Target position z:");
-                    */
+                
+                //streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Headset position x:,Headset position y:,Headset position z:,Headset rotation x:,Headset rotation y:,Headset rotation z:," +
+                 //   handStr + " Hand Position x:," + handStr + " Hand Position y:," + handStr + " Hand Position z:,"
+                    //+ handStr + " Hand rotation x:," + handStr + " Hand rotation y:," + handStr + " Hand rotation z:,Target position x:,Target position y:,Target position z:");
+                  //  
                 streamWriter.Write("Date and clock time (yyyy/MM/dd - hh:mm:ss.ffffff):,Gameplay Time (updated every frame) (s):,User Points:,Peer Points:,Action type:,Target position x:,Target position y:,Target position z:\n");
                 streamWriter.Close();
-            }
+            } */
+        
 
 
             int userPoints = TargetShootScript.userScore;
             int peerPoints = VirtualPeerBehavior.peerPoints; //Update values
 
+            /*
             string userOrPeer = "User";
             if (a.IndexOf("Peer") == 0)
             {
                 userOrPeer = "Peer";
             }
+            */
 
-            path = userPath + getModePath() + userOrPeer + "ScoreData.csv";
+            path = userPath + getModePath() + "ScoreData.csv";
 
             new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Write).Close();
             streamWriter = new StreamWriter(path, true, Encoding.ASCII);
