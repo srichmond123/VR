@@ -39,6 +39,7 @@ public class GenerateTargetsScript : MonoBehaviour {
     bool deletedAllTargets = false;
 
     static bool skipLoadingScreen = false;
+    static bool initialWaitingScreen = false;
 
     public static bool waiting = false;
     public static int numUserTargets = 0;
@@ -222,18 +223,18 @@ public class GenerateTargetsScript : MonoBehaviour {
                     controllerImage.gameObject.SetActive(true);
                     beginText.text = "In this game, you will see two sets of balloons floating around, colored <color=blue>BLUE</color> and " +
                             "<color=red>RED</color>.\n\nYour goal is to aim at and pop <b>only</b> <color=blue>BLUE</color> balloons." +
-                            "\n\n\n        (Press this button to continue)";
-                    controllerImage.transform.localPosition = new Vector3(-34.225f, -196.187f, 13.73f);
+                            "\n\n\n(Press to continue)";
+                    controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.187f, 13.73f);
 
                     if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) && timeSpentOnTutorialStep >= 0.75f)
                     {
                         timeSpentOnTutorialStep = 0f;
                         stepOfTutorial++;
 
-                        controllerImage.transform.localPosition = new Vector3(-34.225f, -196.137f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.137f, 13.73f);
 
                         beginText.text = "For practice, a <color=blue>BLUE</color> balloon will now appear.\n\nTry to pop it by pressing the button near your index finger." +
-                            "\n\n\n        (Press this button to continue)";
+                            "\n\n\n(Press to continue)";
                     }
                 }
                 else if (stepOfTutorial == 2)
@@ -271,7 +272,7 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                         stepOfTutorial++;
 
-                        controllerImage.transform.localPosition = new Vector3(-34.169f, -195.992f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.14102f, -195.992f, 13.73f);
 
                         beginText.transform.localPosition = new Vector3(-33.913f, -195.79f, 13.73f);
 
@@ -283,7 +284,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                         beginText.fontSize = 30;
                         postGameScreen.transform.SetAsFirstSibling();
                         beginText.text = "This scoreboard will display you and your peer's total number of points.\n\n" +
-                            "Your goal is to gain as many points as possible.\n\n\n        (Press this button to continue)"; // +
+                            "Your goal is to gain as many points as possible.\n\n\n(Press to continue)"; // +
                                                                                                                                           /* "You will be competing against a peer.\nTheir goal is to pop <color=red>RED</color> balloons.\n\n" +
                                                                                                                                            "If you <b>miss</b>, you will <b>lose</b> 1 point.\n\n" +
                                                                                                                                            "If you hit one of your peer's <color=red>RED</color> balloons, you will <b>lose</b> 1 point and " +
@@ -299,11 +300,11 @@ public class GenerateTargetsScript : MonoBehaviour {
                     {
                         beginText.fontSize = 35;
 
-                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.076f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.076f, 13.73f);
 
                         beginText.text = "If you pop a <color=blue>BLUE</color> balloon you will <b>gain</b> one point.\n\n" +
                             "If you miss, you will <b>lose</b> one point." +
-                            "\n\n\n\n        (Press this button to continue)";
+                            "\n\n\n\n(Press to continue)";
                         timeSpentOnTutorialStep = 0f;
                         stepOfTutorial++;
                     }
@@ -334,12 +335,13 @@ public class GenerateTargetsScript : MonoBehaviour {
                         VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer      0";
                         */
                         beginText.transform.localPosition = new Vector3(-33.913f, -195.796f, 13.73f);
+
                         beginText.text = "You will play 4 rounds,\n" +
                             "each lasting " + (GAME_TIME / 60) + " minutes.\n\n\n" +
-                            "For the first round, you will play alone.\n\n" +
-                            "Then, you will be connected with a peer, whom you will compete against for the following 3 rounds." +
-                            "\n\n\n        (Press this button to continue)";
-                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.244f, 13.73f);
+                        "You will play alone for one of the rounds and will compete with a peer for three rounds.\n\n" + 
+                        "The order in which you play these 4 rounds is randomized.\n\n\n" +
+                            "(Press to continue)";
+                        controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.244f, 13.73f);
                         stepOfTutorial++;
                         timeSpentOnTutorialStep = 0f;
                     }
@@ -350,14 +352,14 @@ public class GenerateTargetsScript : MonoBehaviour {
                     timeSpentOnTutorialStep += Time.deltaTime;
                     if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) && timeSpentOnTutorialStep >= 0.75f)
                     {
-                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.2819f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.2819f, 13.73f);
                         
                         beginText.text = "Your peer will pop <color=RED>RED</color> balloons.\n\n\n" +
                             "If you pop a <color=RED>RED</color> balloon your peer will <b>gain</b> one point," +
                             " and you will lose one point for missing.\n\n" +
                             "If your peer pops a <color=BLUE>BLUE</color> balloon you will <b>gain</b> one point " +
                             "and they will lose one point for missing." +
-                            "\n\n\n        (Press this button to continue)";
+                            "\n\n\n(Press to continue)";
                         timeSpentOnTutorialStep = 0f;
                         stepOfTutorial++;
                     }
@@ -378,9 +380,9 @@ public class GenerateTargetsScript : MonoBehaviour {
                             beginText.text = "The bar above will show the difference between your score and your peer's score.\n" +
                                 "\n\nIf you are leading, the bar will be <color=blue>BLUE</color>.\n\n\n" +
                                 "If your peer is leading, the bar will be <color=red>RED</color>.\n\n\n\n" +
-                                "        (Press this button to continue)";
+                                "(Press to continue)";
                             beginText.transform.localPosition = new Vector3(-33.913f, -195.882f, 13.73f);
-                            controllerImage.transform.localPosition = new Vector3(-34.202f, -196.298f, 13.73f);
+                            controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.298f, 13.73f);
                         }
                         else
                         {
@@ -388,8 +390,8 @@ public class GenerateTargetsScript : MonoBehaviour {
                                 new Vector3(pieChart.transform.localPosition.x, pieChart.transform.localPosition.y - 100f, pieChart.transform.localPosition.z);
                             beginText.text = "The pie chart above will show your score, in <color=blue>BLUE</color>, in comparison to " +
                                 "your peer's score, in <color=red>RED</color>.\n\n\n" +
-                                "        (Press this button to continue)";
-                            controllerImage.transform.localPosition = new Vector3(-34.202f, -196.251f, 13.73f);
+                                "(Press to continue)";
+                            controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.251f, 13.73f);
                             beginText.transform.localPosition = new Vector3(-33.913f, -196.069f, 13.73f);
 
                         }
@@ -408,11 +410,11 @@ public class GenerateTargetsScript : MonoBehaviour {
                         VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer     15";
 
                         beginText.text = "For example, this is what you will see if you have 12 points and your peer has 15." +
-                            "\n\n\n        (Press this button to continue)";
+                            "\n\n\n(Press to continue)";
 
                         if (barGraph.activeInHierarchy)
                         {
-                            controllerImage.transform.localPosition = new Vector3(-34.202f, -196.061f, 13.73f);
+                            controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.061f, 13.73f);
                         }
 
                         timeSpentOnTutorialStep = 0f;
@@ -430,10 +432,10 @@ public class GenerateTargetsScript : MonoBehaviour {
                         VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer      3";
 
                         beginText.text = "This is what you will see if you have 6 points and your peer has 3." +
-                            "\n\n\n        (Press this button to continue)";
+                            "\n\n\n(Press to continue)";
                         if (barGraph.activeInHierarchy)
                         {
-                            controllerImage.transform.localPosition = new Vector3(-34.202f, -196.0351f, 13.73f);
+                            controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.0351f, 13.73f);
                         }
 
                         timeSpentOnTutorialStep = 0f;
@@ -451,7 +453,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                         VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer      8";
 
                         beginText.text = "This is what you will see if you both have the same number of points." +
-                            "\n\n\n        (Press this button to continue)";
+                            "\n\n\n(Press to continue)";
 
                         timeSpentOnTutorialStep = 0f;
                         stepOfTutorial++;
@@ -464,10 +466,10 @@ public class GenerateTargetsScript : MonoBehaviour {
                     {
                         barGraph.transform.parent.GetComponentInChildren<Text>().enabled = false;
                         beginText.text = "Once you approach the final 10 seconds of the round, a timer" +
-                            " will appear, showing the seconds remaining.\n\n\n        (Press this button to continue)";
+                            " will appear, showing the seconds remaining.\n\n\n(Press to continue)";
 
                         beginText.transform.localPosition = new Vector3(-33.913f, -196.003f, 13.73f);
-                        controllerImage.transform.localPosition = new Vector3(-34.202f, -196.1908f, 13.73f);
+                        controllerImage.transform.localPosition = new Vector3(-34.14102f, -196.1908f, 13.73f);
 
                         timeSpentOnTutorialStep = 0f;
                         stepOfTutorial++;
@@ -498,7 +500,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                         VirtualPeerBehavior.peerTextChangeFromOutside.text = "Peer      0";
 
                         beginText.text = "Before you begin the first " + (GAME_TIME / 60) + " minute round, you will play" +
-                            " a 30 second practice round alone, where no data will be collected.\n\n\n        (Press this button to start the\n         practice round)";
+                            " a 30 second practice round alone, where no data will be collected.\n\n\n\n        (Press to start the practice round)";
                         controllerImage.transform.localPosition = new Vector3(-34.202f, -196.239f, 13.73f);
 
                         timeSpentOnTutorialStep = 0f;
@@ -573,9 +575,6 @@ public class GenerateTargetsScript : MonoBehaviour {
             {
                 if (!inTutorial)
                 {
-                    if (!DataCollector.collectingData)
-                        DataCollector.collectingData = true;
-
                     if (currentMode.Equals(""))
                     {
                         if (modes.Count > 0) //Picking next gameplay mode:
@@ -630,6 +629,11 @@ public class GenerateTargetsScript : MonoBehaviour {
                                         i.enabled = false;
                                     }
                                 }
+                                if (modes.Count == 3) //If alone is first, there needs to be a countdown timer:
+                                {
+                                    waiting = true;
+                                    initialWaitingScreen = true;
+                                }
                             }
                             else if (currentMode.Equals("Equally perform"))
                             {
@@ -676,11 +680,11 @@ public class GenerateTargetsScript : MonoBehaviour {
                             }
                             if (firstPeerRoundWasPicked && !shownLoadingScreen) //If the player just came from the playing alone screen, they need a unique message:
                             {
-                                beginText.text = "You will now compete against a peer.\n\n\n(Press this button to continue)";
+                                beginText.text = "You will now compete against a peer.\n\n\n(Press to continue)";
                                 beginText.transform.localPosition =
                                     new Vector3(-33.913f, -195.875f, 13.73f);
                                 controllerImage.transform.localPosition =
-                                    new Vector3(-34.237f, -196.004f, 13.73f);
+                                    new Vector3(-34.14102f, -196.004f, 13.73f);
                                 beginText.fontSize = 35;
                             }
                             else if (modes.Count < 3)
@@ -692,9 +696,17 @@ public class GenerateTargetsScript : MonoBehaviour {
                                     new Vector3(-34.008f, -195.875f, 13.73f);
                                     
                                 beginText.color = Color.white;
-                                beginText.text = "Next game starts in: ";
+                                if (currentMode.Equals("Alone"))
+                                {
+                                    beginText.text = "             You will play alone in the next round.\n\n     The round starts in:";
+                                }
+                                else
+                                {
+                                    beginText.text = "             You will compete in the next round.\n\n     The round starts in:";
+                                }
+                                
                                 countdownText.gameObject.transform.localPosition =
-                                    new Vector3(-33.81499f, -195.8939f, 13.73f);
+                                    new Vector3(-33.779f, -195.962f, 13.73f);
                             }
                         }
                         else
@@ -705,7 +717,7 @@ public class GenerateTargetsScript : MonoBehaviour {
                             barGraph.GetComponent<Image>().enabled = false;
                             barGraph.transform.parent.GetComponentInChildren<Text>().enabled = false;
                             beginText.transform.localPosition =
-                                        new Vector3(-33.975f, -195.875f, 13.73f);
+                                        new Vector3(-33.923f, -195.875f, 13.73f);
                             
                             beginText.text = "The game is over now,\nthank you for your cooperation!";
                             gameIsOver = true;
@@ -713,12 +725,19 @@ public class GenerateTargetsScript : MonoBehaviour {
                             DataCollector.collectingData = false;
                             string plural = (Mathf.Abs(scoreDifference) > 1 || scoreDifference == 0) ? " points" : " point";
 
-                            if (scoreDifference > 0) //User won
-                                postGameScreen.GetComponentInChildren<Text>().text = "You won by " + scoreDifference + plural;
-                            else if (scoreDifference < 0) //Peer won
-                                postGameScreen.GetComponentInChildren<Text>().text = "Your peer won by " + Mathf.Abs(scoreDifference) + plural;
-                            else //Tie
-                                postGameScreen.GetComponentInChildren<Text>().text = "You tied with your peer";
+                            if (!prevMode.Equals("Alone")) //If they didn't just play alone
+                            {
+                                if (scoreDifference > 0) //User won
+                                    postGameScreen.GetComponentInChildren<Text>().text = "You won by " + scoreDifference + plural;
+                                else if (scoreDifference < 0) //Peer won
+                                    postGameScreen.GetComponentInChildren<Text>().text = "Your peer won by " + Mathf.Abs(scoreDifference) + plural;
+                                else //Tie
+                                    postGameScreen.GetComponentInChildren<Text>().text = "You tied with your peer";
+                            }
+                            else
+                            {
+                                postGameScreen.GetComponentInChildren<Text>().text = "You scored " + scoreDifference + plural;
+                            }
                         }
                     }
                     if (waiting)
@@ -742,61 +761,120 @@ public class GenerateTargetsScript : MonoBehaviour {
                             }
                             countdownText.text = newText;
                         }
-                        
 
-                        if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) || startedWaitingForPeer || (modes.Count < 3 && waitingTime >= 10f))
+                        if (startedWaitingForPeer && setWaitingTime != 0 && waitingTime >= setWaitingTime - 10f) //Countdown after connecting to peer
                         {
-                            if (waitingTime >= 1.0f && !gameIsOver && modes.Count == 2 || (modes.Count != 2 && waitingTime >= 10f && !gameIsOver) || (firstPeerRoundWasPicked && !shownLoadingScreen) || (waitingTime >= setWaitingTime && setWaitingTime > 0f))
+                            loadingScreen.GetComponent<Text>().enabled = false;
+                            loadingScreen.GetComponentInChildren<RawImage>().enabled = false;
+                            beginText.transform.localPosition =
+                                    new Vector3(-34.008f, -195.875f, 13.73f);
+
+                            beginText.color = Color.white;
+                            beginText.gameObject.SetActive(true);
+                            beginText.text = "             You will compete in the next round.\n\n     The round starts in:";
+                            countdownText.gameObject.transform.localPosition =
+                                new Vector3(-33.779f, -195.962f, 13.73f);
+                            string newText = Mathf.FloorToInt(11f - (waitingTime - (setWaitingTime - 10f))).ToString();
+                            if (!newText.Equals(countdownText.text))
                             {
-                                //if (modes.Count < 3)
-                                
+                                countdownText.gameObject.GetComponent<CountdownTimerScript>().flash(false);
+                            }
+                            countdownText.text = newText;
+                        }
+                        if (initialWaitingScreen)
+                        {
+                            postGameScreen.SetActive(true);
+                            postGameScreen.GetComponentInChildren<Text>().enabled = false;
+                            loadingScreen.GetComponent<Text>().enabled = false;
+                            loadingScreen.GetComponentInChildren<RawImage>().enabled = false;
+                            beginText.transform.localPosition =
+                                    new Vector3(-34.008f, -195.875f, 13.73f);
 
-                                if (pieChart.activeInHierarchy)
-                                {
-                                    pieChart.GetComponent<PieGraphScript>().enabled = true;
-                                    foreach (Image i in pieChart.GetComponentsInChildren<Image>())
-                                    {
-                                        i.enabled = true;
-                                    }
-                                }
-                                controllerImage.gameObject.SetActive(false);
-                                
+                            beginText.color = Color.white;
+                            beginText.gameObject.SetActive(true);
+                            beginText.text = "             You will play alone in the next round.\n\n     The round starts in:";
+                            countdownText.gameObject.transform.localPosition =
+                                new Vector3(-33.779f, -195.962f, 13.73f);
+                            string newText = Mathf.FloorToInt(11f - waitingTime).ToString();
+                            if (!newText.Equals(countdownText.text))
+                            {
+                                countdownText.gameObject.GetComponent<CountdownTimerScript>().flash(false);
+                            }
+                            countdownText.text = newText;
+                            if (waitingTime >= 10f)
+                            {
+                                postGameScreen.SetActive(false);
+                                postGameScreen.GetComponentInChildren<Text>().enabled = true;
+                                initialWaitingScreen = false;
+                                waiting = false;
                                 beginText.gameObject.SetActive(false);
+                                waitingTime = 0f;
+                                countdownText.gameObject.transform.localPosition = countdownTimerPosition;
+                                postGameScreen.SetActive(false);
+                            }
+                        }
 
-                                if (!currentMode.Equals("Alone"))
-                                    barGraph.transform.parent.GetComponentInChildren<Text>().enabled = true;
+                        if (!initialWaitingScreen)
+                        {
+                            if ((OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.RTouch) || OVRInput.GetDown(OVRInput.Button.PrimaryIndexTrigger, OVRInput.Controller.LTouch)) || startedWaitingForPeer || (/*modes.Count < 3 &&*/ waitingTime >= 10f))
+                            {
+                                if (/* waitingTime >= 1.0f && !gameIsOver && modes.Count == 2 || (modes.Count != 2 && */ (waitingTime >= 10f && !gameIsOver) || (firstPeerRoundWasPicked && !shownLoadingScreen) || (waitingTime >= setWaitingTime && setWaitingTime > 0f))
+                                {
+                                    //if (modes.Count < 3)
 
-                                if (!shownLoadingScreen && !startedWaitingForPeer)
-                                {
-                                    shownLoadingScreen = true;
-                                    skipLoadingScreen = false;
-                                    postGameScreen.GetComponentInChildren<Text>().enabled = false;
-                                    startedWaitingForPeer = true;
-                                    loadingScreen.GetComponent<Text>().enabled = true;
-                                    loadingScreen.GetComponentInChildren<RawImage>().enabled = true;
-                                    setWaitingTime = Random.Range(2f, 9f);
-                                    //setWaitingTime = Random.Range(0.5f, 3f);
-                                    waitingTime = 0f;
-                                }
-                                else if (waitingTime >= setWaitingTime)
-                                {
-                                    skipLoadingScreen = true;
-                                    setWaitingTime = 0f;
-                                    waiting = false;
-                                    startedWaitingForPeer = false;
-                                    loadingScreen.GetComponent<Text>().enabled = false;
-                                    loadingScreen.GetComponentInChildren<RawImage>().enabled = false;
-                                    postGameScreen.GetComponentInChildren<Text>().enabled = true;
-                                    postGameScreen.SetActive(false);
-                                    waitingTime = 0f;
-                                }
 
-                                if (skipLoadingScreen)
-                                {
-                                    waiting = false;
-                                    waitingTime = 0f;
-                                    countdownText.gameObject.transform.localPosition = countdownTimerPosition;
-                                    postGameScreen.SetActive(false);
+                                    if (pieChart.activeInHierarchy)
+                                    {
+                                        pieChart.GetComponent<PieGraphScript>().enabled = true;
+                                        foreach (Image i in pieChart.GetComponentsInChildren<Image>())
+                                        {
+                                            i.enabled = true;
+                                        }
+                                    }
+                                    controllerImage.gameObject.SetActive(false);
+
+                                    //beginText.gameObject.SetActive(false);
+
+                                    if (!currentMode.Equals("Alone") && setWaitingTime == 0f)
+                                        barGraph.transform.parent.GetComponentInChildren<Text>().enabled = true;
+
+                                    if (!shownLoadingScreen && !startedWaitingForPeer)
+                                    {
+                                        shownLoadingScreen = true;
+                                        skipLoadingScreen = false;
+                                        postGameScreen.GetComponentInChildren<Text>().enabled = false;
+                                        startedWaitingForPeer = true;
+                                        barGraph.transform.parent.GetComponentInChildren<Text>().enabled = false;
+                                        loadingScreen.GetComponent<Text>().enabled = true;
+                                        loadingScreen.GetComponentInChildren<RawImage>().enabled = true;
+                                        setWaitingTime = Random.Range(10f, 20f) + 10f;
+
+                                        beginText.text = "";
+                                        //setWaitingTime = Random.Range(0.5f, 3f);
+                                        waitingTime = 0f;
+                                    }
+                                    else if (waitingTime >= setWaitingTime)
+                                    {
+                                        barGraph.transform.parent.GetComponentInChildren<Text>().enabled = true;
+                                        skipLoadingScreen = true;
+                                        setWaitingTime = 0f;
+                                        waiting = false;
+                                        startedWaitingForPeer = false;
+                                        beginText.gameObject.SetActive(false);
+
+                                        postGameScreen.GetComponentInChildren<Text>().enabled = true;
+                                        postGameScreen.SetActive(false);
+                                        waitingTime = 0f;
+                                    }
+
+                                    if (skipLoadingScreen)
+                                    {
+                                        waiting = false;
+                                        beginText.gameObject.SetActive(false);
+                                        waitingTime = 0f;
+                                        countdownText.gameObject.transform.localPosition = countdownTimerPosition;
+                                        postGameScreen.SetActive(false);
+                                    }
                                 }
                             }
                         }
@@ -820,6 +898,14 @@ public class GenerateTargetsScript : MonoBehaviour {
 
                 if (!waiting)
                 {
+                    if (!DataCollector.collectingData)
+                        DataCollector.collectingData = true;
+
+                    if (currentMode.Equals("Alone") && !inTutorial)
+                        barGraph.transform.parent.GetComponentInChildren<Text>().enabled = false;
+                    else if (!inTutorial)
+                        barGraph.transform.parent.GetComponentInChildren<Text>().enabled = true;
+
                     userRandomNoiseTimer += Time.deltaTime;
                     peerRandomNoiseTimer += Time.deltaTime;
 
